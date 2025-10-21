@@ -1,3 +1,4 @@
+use bevy::dev_tools::fps_overlay::{FpsOverlayConfig, FpsOverlayPlugin};
 use bevy::prelude::*;
 use bevy::input::mouse::MouseButton;
 use bevy::window::Window;
@@ -8,17 +9,19 @@ fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
         .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
-        .add_plugins(RapierDebugRenderPlugin::default())
+        .add_plugins(FpsOverlayPlugin::default())
+        // .add_plugins(RapierDebugRenderPlugin::default())
         .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
         .add_systems(Startup, setup_environment)
         .add_systems(Startup, setup_ragdoll)
         .add_systems(Update, spawn_ball)
+        .add_systems(Update, player_control)
         .add_systems(Update, camera_follow_y)
         .run();
 }
 
 #[derive(Component)]
-struct Torso;
+struct PlayerTorso;
 
 #[derive(Component)]
 struct MainCamera;
@@ -54,7 +57,8 @@ fn setup_ragdoll(
         .insert(MeshMaterial2d(white_material.clone()))
         .insert(Collider::cuboid(10.0, 20.0))
         .insert(Transform::from_xyz(0.0, 200.0, 0.0))
-        .insert(Torso)
+        .insert(PlayerTorso)
+        .insert(Velocity::default())
         .insert(RigidBody::Dynamic).id();
 
     let head = commands
@@ -77,6 +81,21 @@ fn setup_ragdoll(
         .insert(MeshMaterial2d(white_material.clone()))
         .insert(Collider::cuboid(5.0, 25.0))
         .insert(Transform::from_xyz(-18.0, 195.0, 0.0))
+        .insert(RigidBody::Dynamic).id();
+
+    let leg_r = commands
+        .spawn(Mesh2d(meshes.add(Rectangle::new(10.0, 50.0))))
+        .insert(MeshMaterial2d(white_material.clone()))
+        .insert(Collider::cuboid(5.0, 25.0))
+        .insert(Transform::from_xyz(6.0, 155.0, 0.0))
+        .insert(RigidBody::Dynamic).id();
+
+
+    let leg_l = commands
+        .spawn(Mesh2d(meshes.add(Rectangle::new(10.0, 50.0))))
+        .insert(MeshMaterial2d(white_material.clone()))
+        .insert(Collider::cuboid(5.0, 25.0))
+        .insert(Transform::from_xyz(-6.0, 155.0, 0.0))
         .insert(RigidBody::Dynamic).id();
 
     // head and torso
@@ -111,6 +130,28 @@ fn setup_ragdoll(
                 .limits([-2.0, 2.0])
         ))
         .insert(ChildOf(torso));
+
+    // right leg and torso
+    commands
+        .spawn(ImpulseJoint::new(
+            leg_r,
+            RevoluteJointBuilder::new()
+                .local_anchor1(Vec2::new(0.0, 25.0))
+                .local_anchor2(Vec2::new(6.0, -20.0))
+                .limits([-2.0, 2.0])
+        ))
+        .insert(ChildOf(torso));
+
+    // left leg and torso
+    commands
+        .spawn(ImpulseJoint::new(
+            leg_l,
+            RevoluteJointBuilder::new()
+                .local_anchor1(Vec2::new(0.0, 25.0))
+                .local_anchor2(Vec2::new(-6.0, -20.0))
+                .limits([-2.0, 2.0])
+        ))
+        .insert(ChildOf(torso));
 }
 
 fn spawn_ball(
@@ -142,7 +183,7 @@ fn spawn_ball(
 
 fn camera_follow_y(
     mut transforms: ParamSet<(
-        Query<&Transform, With<Torso>>,
+        Query<&Transform, With<PlayerTorso>>,
         Query<&mut Transform, With<MainCamera>>,
     )>
 ) {
@@ -154,5 +195,32 @@ fn camera_follow_y(
     
     if let Ok(mut camera_transform) = transforms.p1().single_mut() {
         camera_transform.translation.y = torso_y;
+    }
+}
+
+fn player_control(
+    mut player_query: Query<&mut Velocity, With<PlayerTorso>>,
+    kb_input: Res<ButtonInput<KeyCode>>
+) {
+    if kb_input.just_pressed(KeyCode::ArrowUp) {
+        if let Ok(mut velocity) = player_query.single_mut() {
+            velocity.linvel.y = 2000.0
+        }
+    } else if kb_input.pressed(KeyCode::ArrowRight) {
+        if let Ok(mut velocity) = player_query.single_mut() {
+            if velocity.linvel.x <= 300.0 {
+                velocity.linvel.x += 100.0
+            } else {
+                velocity.linvel.x = 400.0
+            }
+        }
+    } else if kb_input.pressed(KeyCode::ArrowLeft) {
+        if let Ok(mut velocity) = player_query.single_mut() {
+            if velocity.linvel.x >= -300.0 {
+                velocity.linvel.x -= 100.0
+            } else {
+                velocity.linvel.x = -400.0
+            }
+        }
     }
 }
