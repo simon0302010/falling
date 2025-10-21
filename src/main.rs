@@ -10,12 +10,13 @@ fn main() {
         .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
         .add_plugins(RapierDebugRenderPlugin::default())
         .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
-        .add_systems(Startup, setup)
+        .add_systems(Startup, setup_environment)
+        .add_systems(Startup, setup_ragdoll)
         .add_systems(Update, spawn_ball)
         .run();
 }
 
-fn setup(
+fn setup_environment(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
@@ -32,8 +33,15 @@ fn setup(
         ))
         .insert(MeshMaterial2d(white_material.clone()))
         .insert(Transform::from_xyz(0.0, -100.0, 0.0));
+}
 
-    // ragdoll
+fn setup_ragdoll(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
+) {
+    let white_material = materials.add(Color::srgb(1.0, 1.0, 1.0));
+
     let torso = commands
         .spawn(Mesh2d(meshes.add(Rectangle::new(20.0, 40.0))))
         .insert(MeshMaterial2d(white_material.clone()))
@@ -52,7 +60,7 @@ fn setup(
         .spawn(Mesh2d(meshes.add(Rectangle::new(10.0, 50.0))))
         .insert(MeshMaterial2d(white_material.clone()))
         .insert(Collider::cuboid(5.0, 25.0))
-        .insert(Transform::from_xyz(50.0, 180.0, 0.0))
+        .insert(Transform::from_xyz(15.0, 195.0, 0.0))
         .insert(RigidBody::Dynamic).id();
 
 
@@ -60,9 +68,10 @@ fn setup(
         .spawn(Mesh2d(meshes.add(Rectangle::new(10.0, 50.0))))
         .insert(MeshMaterial2d(white_material.clone()))
         .insert(Collider::cuboid(5.0, 25.0))
-        .insert(Transform::from_xyz(-50.0, 180.0, 0.0))
+        .insert(Transform::from_xyz(-15.0, 195.0, 0.0))
         .insert(RigidBody::Dynamic).id();
 
+    // head and torso
     commands
         .spawn(ImpulseJoint::new(
             head,
@@ -73,21 +82,23 @@ fn setup(
         ))
         .insert(ChildOf(torso));
 
+    // right arm and torso
     commands
         .spawn(ImpulseJoint::new(
             arm_r,
             RevoluteJointBuilder::new()
-                .local_anchor1(Vec2::new(0.0, 25.0))
+                .local_anchor1(Vec2::new(-5.0, 20.0))
                 .local_anchor2(Vec2::new(10.0, 15.0))
                 .limits([-2.0, 2.0])
         ))
         .insert(ChildOf(torso));
 
+    // left arm and torso
     commands
         .spawn(ImpulseJoint::new(
             arm_l,
             RevoluteJointBuilder::new()
-                .local_anchor1(Vec2::new(0.0, 25.0))
+                .local_anchor1(Vec2::new(5.0, 20.0))
                 .local_anchor2(Vec2::new(-10.0, 15.0))
                 .limits([-2.0, 2.0])
         ))
