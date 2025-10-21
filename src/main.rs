@@ -21,7 +21,8 @@ fn main() {
         .add_systems(Startup, setup_environment)
         .add_systems(Startup, setup_player)
         .add_systems(Update, player_control)
-        .add_systems(Update, print_velocity)
-        .add_systems(PostUpdate, camera_follow_y)
+        .add_systems(Update, print_stats)
+        .add_systems(Update, move_walls)
+        .add_systems(Update, camera_follow_y)
         .run();
 }

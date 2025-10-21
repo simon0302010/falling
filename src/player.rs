@@ -36,11 +36,16 @@ pub fn player_control(
     }
 }
 
-pub fn print_velocity(
-    torso_query: Query<&Velocity, With<PlayerTorso>>
+pub fn print_stats(
+    velocity_query: Query<&Velocity, With<PlayerTorso>>,
+    pos_query: Query<&Transform, With<PlayerTorso>>
 ) {
-    if let Ok(velocity) = torso_query.single() {
+    if let Ok(velocity) = velocity_query.single() {
         println!("Player Velocity: ({}, {})", velocity.linvel.x as i32, velocity.linvel.y as i32)
+    }
+
+    if let Ok(player_transform) = pos_query.single() {
+        println!("Player Position: ({}, {})", player_transform.translation.x as i32, player_transform.translation.y as i32)
     }
 }
 
@@ -49,7 +54,7 @@ pub fn setup_player(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    let linear_damping = 1.5;
+    let linear_damping = 0.8;
     let angular_damping = 0.5;
     let white_material = materials.add(Color::srgb(1.0, 1.0, 1.0));
 
