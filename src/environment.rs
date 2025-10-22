@@ -37,6 +37,10 @@ pub fn setup_environment(
         .insert(Wall)
         .insert(MeshMaterial2d(grey_material.clone()))
         .insert(Collider::cuboid(10.0, 7500.0))
+        .insert(Friction {
+            coefficient: 0.0,  // No friction
+            combine_rule: CoefficientCombineRule::Min,
+        })
         .insert(Transform::from_xyz(-300.0, 0.0, 0.0));
 
     commands
@@ -46,6 +50,10 @@ pub fn setup_environment(
         .insert(Wall)
         .insert(MeshMaterial2d(grey_material.clone()))
         .insert(Collider::cuboid(10.0, 7500.0))
+        .insert(Friction {
+            coefficient: 0.0,  // No friction
+            combine_rule: CoefficientCombineRule::Min,
+        })
         .insert(Transform::from_xyz(300.0, 0.0, 0.0));
 }
 
