@@ -62,6 +62,7 @@ const FRAME_OBSTACLE_SPAWN_CHANCE: f64 = 0.1;
 const OVER_PLAYER_DESPAWN: f32 = 500.0;
 const MIN_OBSTACLE_DISTANCE: f32 = 300.0;
 const UNDER_PLAYER_SPAWN: f32 = 1000.0;
+const MIN_SPAWN_HEIGHT: f32 = -4000.0;
 
 pub fn manage_obstacles(
     mut commands: Commands,
@@ -85,7 +86,7 @@ pub fn manage_obstacles(
                     (dx * dx + dy * dy).sqrt() < MIN_OBSTACLE_DISTANCE
                 });
 
-                if !too_close {
+                if !too_close && player_transform.translation.y >= MIN_SPAWN_HEIGHT {
                     commands
                         .spawn(Mesh2d(meshes.add(Rectangle::new(150.0, 100.0))))
                         .insert(MeshMaterial2d(
