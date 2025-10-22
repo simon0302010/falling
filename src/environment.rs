@@ -111,24 +111,7 @@ pub fn manage_obstacles(
                 || obstacle_transform.translation.y <= player_transform.translation.y - UNDER_PLAYER_SPAWN - 100.0
             {
                 commands.entity(obstacle_entity).despawn();
-                println!("Despawned Obstacle at: ({}, {})", obstacle_transform.translation.x as i32, obstacle_transform.translation.y as i32)
             }
-        }
-    }
-}
-
-// not used anymore
-pub fn _move_walls(
-    mut transforms: ParamSet<(
-        Query<&Transform, With<PlayerTorso>>,
-        Query<&mut Transform, With<Wall>>,
-    )>
-) {
-    if let Ok(torso_transform) = transforms.p0().single() {
-        let torso_y = torso_transform.translation.y;
-
-        for mut wall in transforms.p1().iter_mut() {
-            wall.translation.y = torso_y;
         }
     }
 }

@@ -31,6 +31,11 @@ pub fn player_control(
                 velocity.linvel.x = -MAX_MOVE_SPEED;
             }
         }
+    // temporary
+    } else if kb_input.just_pressed(KeyCode::ArrowUp) {
+        if let Ok(mut velocity) = player_query.single_mut() {
+            velocity.linvel.y += 5000.0;
+        }
     }
 }
 
@@ -53,19 +58,6 @@ pub fn recenter_world(
                 rigid_body.translation.y += diff;
             }
         }
-    }
-}
-
-pub fn _print_stats(
-    velocity_query: Query<&Velocity, With<PlayerTorso>>,
-    pos_query: Query<&Transform, With<PlayerTorso>>
-) {
-    if let Ok(velocity) = velocity_query.single() {
-        println!("Player Velocity: ({}, {})", velocity.linvel.x as i32, velocity.linvel.y as i32)
-    }
-
-    if let Ok(player_transform) = pos_query.single() {
-        println!("Player Position: ({}, {})", player_transform.translation.x as i32, player_transform.translation.y as i32)
     }
 }
 
@@ -94,6 +86,8 @@ pub fn setup_player(
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
         .insert(Name::new("player_torso"))
+        .insert(ContactForceEventThreshold(50.0 * 1000000.0))
+        .insert(ActiveEvents::CONTACT_FORCE_EVENTS)
         .id();
 
     let head = commands
@@ -109,6 +103,8 @@ pub fn setup_player(
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
         .insert(Name::new("player_head"))
+        .insert(ContactForceEventThreshold(60.0 * 1000000.0))
+        .insert(ActiveEvents::CONTACT_FORCE_EVENTS)
         .id();
 
     let arm_r = commands
@@ -124,6 +120,8 @@ pub fn setup_player(
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
         .insert(Name::new("player_arm_r"))
+        .insert(ContactForceEventThreshold(60.0 * 1000000.0))
+        .insert(ActiveEvents::CONTACT_FORCE_EVENTS)
         .id();
 
 
@@ -140,6 +138,8 @@ pub fn setup_player(
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
         .insert(Name::new("player_arm_l"))
+        .insert(ContactForceEventThreshold(60.0 * 1000000.0))
+        .insert(ActiveEvents::CONTACT_FORCE_EVENTS)
         .id();
 
     let leg_r = commands
@@ -155,6 +155,8 @@ pub fn setup_player(
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
         .insert(Name::new("player_leg_r"))
+        .insert(ContactForceEventThreshold(60.0 * 1000000.0))
+        .insert(ActiveEvents::CONTACT_FORCE_EVENTS)
         .id();
 
 
@@ -171,6 +173,8 @@ pub fn setup_player(
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
         .insert(Name::new("player_leg_l"))
+        .insert(ContactForceEventThreshold(60.0 * 1000000.0))
+        .insert(ActiveEvents::CONTACT_FORCE_EVENTS)
         .id();
 
     // head and torso
