@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::{rngs::StdRng, Rng};
 
-use crate::{camera::MainCamera, player::PlayerTorso};
+use crate::player::PlayerTorso;
 
 #[derive(Component)]
 pub struct Wall;
@@ -23,11 +23,7 @@ pub fn setup_environment(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    commands.spawn((Camera2d::default(), MainCamera));
-
-    let _white_material = materials.add(Color::srgb(1.0, 1.0, 1.0));
     let grey_material = materials.add(Color::srgb(0.15, 0.15, 0.15));
-    let _blue_material = materials.add(Color::srgb(0.0, 0.0, 0.7));
     
     // walls
     commands

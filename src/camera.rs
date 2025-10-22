@@ -5,6 +5,12 @@ use crate::player::PlayerTorso;
 #[derive(Component)]
 pub struct MainCamera;
 
+pub fn setup_camera(
+    mut commands: Commands,
+) {
+    commands.spawn((Camera2d::default(), MainCamera));
+}
+
 pub fn camera_follow_y(
     mut queries: ParamSet<(
         Query<&Transform, With<PlayerTorso>>,

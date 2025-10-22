@@ -1,6 +1,13 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
+/*
+Ideas:
+- Turn player limbs red when broken
+- Player dies when broken limb experiences too much force
+- Player dies instantly when head experiences too much force
+*/
+
 pub fn detect_collision(
     mut contact_force_events: EventReader<ContactForceEvent>,
     name_query: Query<&Name>,
@@ -9,12 +16,12 @@ pub fn detect_collision(
         let name1 = name_query.get(contact_force_event.collider1).unwrap();
         let name2 = name_query.get(contact_force_event.collider2).unwrap();
 
-        let impact_strength = contact_force_event.total_force_magnitude as i32;
+        let impact_force = contact_force_event.total_force_magnitude as i32;
 
         if !(name1.contains("player") && name2.contains("player")) {
             println!(
-                "Collision between '{}' and '{}'. Strength: {}",
-                name1, name2, impact_strength
+                "Collision between '{}' and '{}'. Force: {}",
+                name1, name2, impact_force
             )
         }
     }
