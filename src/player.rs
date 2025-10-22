@@ -5,6 +5,9 @@ use bevy_rapier2d::prelude::*;
 #[derive(Component)]
 pub struct PlayerTorso;
 
+#[derive(Resource)]
+pub struct RecenterTimer(pub Timer);
+
 const MOVE_ACCELERATION: f32 = 100.0;
 const MAX_MOVE_SPEED: f32 = 400.0;
 const JUMP_VELOCITY: f32 = 2000.0;
@@ -31,6 +34,27 @@ pub fn player_control(
                 velocity.linvel.x -= MOVE_ACCELERATION;
             } else {
                 velocity.linvel.x = -MAX_MOVE_SPEED;
+            }
+        }
+    }
+}
+
+const RESET_HEIGHT: f32 = 3000.0;
+
+pub fn recenter_world(
+    time: Res<Time>,
+    mut timer: ResMut<RecenterTimer>,
+    mut transforms: ParamSet<(
+        Query<&Transform, With<PlayerTorso>>,
+        Query<&mut Transform, With<RigidBody>>,
+    )>
+) {
+    if timer.0.tick(time.delta()).just_finished() {
+        if let Ok(torso_transform) = transforms.p0().single() {
+            let diff = RESET_HEIGHT - torso_transform.translation.y;
+
+            for mut rigid_body in transforms.p1().iter_mut() {
+                rigid_body.translation.y += diff;
             }
         }
     }
@@ -195,3 +219,5 @@ pub fn setup_player(
         ))
         .insert(ChildOf(torso));
 }
+
+// TODO: teleport everything back to (0, 0) every one in a while

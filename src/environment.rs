@@ -13,8 +13,9 @@ pub fn setup_environment(
 ) {
     commands.spawn((Camera2d::default(), MainCamera));
 
-    let _white_material = materials.add(Color::srgb(1.0, 1.0, 1.0));
-    let blue_material = materials.add(Color::srgb(0.0, 0.0, 0.7));
+    let white_material = materials.add(Color::srgb(1.0, 1.0, 1.0));
+    // TODO: better colour
+    let _blue_material = materials.add(Color::srgb(0.0, 0.0, 0.7));
 
     // ground
     /*
@@ -30,24 +31,24 @@ pub fn setup_environment(
     // walls
     commands
         .spawn(Mesh2d(
-            meshes.add(Rectangle::new(40.0, 4000.0))
+            meshes.add(Rectangle::new(20.0, 15000.0))
         ))
         .insert(Wall)
-        .insert(MeshMaterial2d(blue_material.clone()))
-        .insert(Collider::cuboid(20.0, 2000.0))
+        .insert(MeshMaterial2d(white_material.clone()))
+        .insert(Collider::cuboid(10.0, 7500.0))
         .insert(Transform::from_xyz(-300.0, 0.0, 0.0));
 
     commands
         .spawn(Mesh2d(
-            meshes.add(Rectangle::new(40.0, 4000.0))
+            meshes.add(Rectangle::new(20.0, 15000.0))
         ))
         .insert(Wall)
-        .insert(MeshMaterial2d(blue_material.clone()))
-        .insert(Collider::cuboid(20.0, 2000.0))
+        .insert(MeshMaterial2d(white_material.clone()))
+        .insert(Collider::cuboid(10.0, 7500.0))
         .insert(Transform::from_xyz(300.0, 0.0, 0.0));
 }
 
-pub fn move_walls(
+pub fn _move_walls(
     mut transforms: ParamSet<(
         Query<&Transform, With<PlayerTorso>>,
         Query<&mut Transform, With<Wall>>,
