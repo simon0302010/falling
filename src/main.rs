@@ -1,6 +1,9 @@
+use std::time::SystemTime;
+
 use bevy::dev_tools::fps_overlay::FpsOverlayPlugin;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use rand::rngs::StdRng;
 
 mod player;
 use player::*;
@@ -10,8 +13,8 @@ use camera::*;
 
 mod environment;
 use environment::*;
+use rand::SeedableRng;
 
-const RECENTER_DURATION: f32 = 6.0;
 
 fn main() {
     App::new()
@@ -20,12 +23,16 @@ fn main() {
         .add_plugins(FpsOverlayPlugin::default())
         // .add_plugins(RapierDebugRenderPlugin::default())
         .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
-        .insert_resource(RecenterTimer(Timer::from_seconds(RECENTER_DURATION, TimerMode::Repeating)))
+        .insert_resource(ObstaclesData {
+            last_spawned: SystemTime::now(),
+            rng: StdRng::from_entropy()
+        })
         .add_systems(Startup, setup_environment)
         .add_systems(Startup, setup_player)
         .add_systems(Update, player_control)
         .add_systems(Update, print_stats)
         .add_systems(Update, recenter_world)
+        .add_systems(Update, manage_obstacles)
         .add_systems(PostUpdate, camera_follow_y)
         .run();
 }

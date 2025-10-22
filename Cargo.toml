@@ -3,10 +3,11 @@ name = "falling"
 description = "A simple game about falling."
 repository = "https://github.com/simon0302010/falling"
 readme = "README.md"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 license = "GPL-3.0-only"
 
 [dependencies]
 bevy = { version = "0.16.*", features = [ "bevy_dev_tools" ]}
 bevy_rapier2d =  { version = "0.31.*", features = [ "simd-stable", "debug-render-2d" ] }
+rand = "0.8.5"
