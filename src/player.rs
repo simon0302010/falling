@@ -11,7 +11,6 @@ pub struct PlayerBodyPart;
 const MOVE_ACCELERATION: f32 = 100.0;
 const MAX_MOVE_SPEED: f32 = 600.0;
 
-// TODO: movement using forces instead of setting velocity
 pub fn player_control(
     mut player_query: Query<&mut Velocity, With<PlayerTorso>>,
     kb_input: Res<ButtonInput<KeyCode>>
@@ -57,7 +56,7 @@ pub fn recenter_world(
     }
 }
 
-pub fn print_stats(
+pub fn _print_stats(
     velocity_query: Query<&Velocity, With<PlayerTorso>>,
     pos_query: Query<&Transform, With<PlayerTorso>>
 ) {
@@ -94,6 +93,7 @@ pub fn setup_player(
         .insert(RigidBody::Dynamic)
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
+        .insert(Name::new("player_torso"))
         .id();
 
     let head = commands
@@ -108,6 +108,7 @@ pub fn setup_player(
         .insert(RigidBody::Dynamic)
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
+        .insert(Name::new("player_head"))
         .id();
 
     let arm_r = commands
@@ -122,6 +123,7 @@ pub fn setup_player(
         .insert(RigidBody::Dynamic)
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
+        .insert(Name::new("player_arm_r"))
         .id();
 
 
@@ -137,6 +139,7 @@ pub fn setup_player(
         .insert(RigidBody::Dynamic)
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
+        .insert(Name::new("player_arm_l"))
         .id();
 
     let leg_r = commands
@@ -151,6 +154,7 @@ pub fn setup_player(
         .insert(RigidBody::Dynamic)
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
+        .insert(Name::new("player_leg_r"))
         .id();
 
 
@@ -166,6 +170,7 @@ pub fn setup_player(
         .insert(RigidBody::Dynamic)
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
+        .insert(Name::new("player_leg_l"))
         .id();
 
     // head and torso

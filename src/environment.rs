@@ -38,10 +38,11 @@ pub fn setup_environment(
         .insert(MeshMaterial2d(grey_material.clone()))
         .insert(Collider::cuboid(10.0, 7500.0))
         .insert(Friction {
-            coefficient: 0.0,  // No friction
+            coefficient: 0.0,
             combine_rule: CoefficientCombineRule::Min,
         })
-        .insert(Transform::from_xyz(-300.0, 0.0, 0.0));
+        .insert(Transform::from_xyz(-300.0, 0.0, 0.0))
+        .insert(Name::new("wall"));
 
     commands
         .spawn(Mesh2d(
@@ -51,14 +52,15 @@ pub fn setup_environment(
         .insert(MeshMaterial2d(grey_material.clone()))
         .insert(Collider::cuboid(10.0, 7500.0))
         .insert(Friction {
-            coefficient: 0.0,  // No friction
+            coefficient: 0.0,
             combine_rule: CoefficientCombineRule::Min,
         })
-        .insert(Transform::from_xyz(300.0, 0.0, 0.0));
+        .insert(Transform::from_xyz(300.0, 0.0, 0.0))
+        .insert(Name::new("wall"));
 }
 
 const MAX_SPAWN_DELTA_MS: u128 = 500;
-const FRAME_OBSTACLE_SPAWN_CHANCE: f64 = 0.1;
+const FRAME_OBSTACLE_SPAWN_CHANCE: f64 = 0.05;
 const OVER_PLAYER_DESPAWN: f32 = 500.0;
 const MIN_OBSTACLE_DISTANCE: f32 = 300.0;
 const UNDER_PLAYER_SPAWN: f32 = 1000.0;
@@ -80,10 +82,11 @@ pub fn manage_obstacles(
                 let new_y = player_transform.translation.y - UNDER_PLAYER_SPAWN;
 
                 // check distance to other obstacles
+                let min_dist_sq = MIN_OBSTACLE_DISTANCE * MIN_OBSTACLE_DISTANCE;
                 let too_close = obstacles.iter().any(|(_, t)| {
                     let dx = t.translation.x - new_x;
                     let dy = t.translation.y - new_y;
-                    (dx * dx + dy * dy).sqrt() < MIN_OBSTACLE_DISTANCE
+                    (dx * dx + dy * dy) < min_dist_sq
                 });
 
                 if !too_close && player_transform.translation.y >= MIN_SPAWN_HEIGHT {
@@ -94,7 +97,8 @@ pub fn manage_obstacles(
                         ))
                         .insert(ObstacleObject)
                         .insert(Collider::cuboid(75.0, 50.0))
-                        .insert(Transform::from_xyz(new_x, new_y, 0.0));
+                        .insert(Transform::from_xyz(new_x, new_y, 0.0))
+                        .insert(Name::new("obstacle_rectangular"));
 
                     obstacles_data.last_spawned = SystemTime::now();
                 }
