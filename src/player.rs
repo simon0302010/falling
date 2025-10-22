@@ -219,5 +219,3 @@ pub fn setup_player(
         ))
         .insert(ChildOf(torso));
 }
-
-// TODO: teleport everything back to (0, 0) every one in a while
