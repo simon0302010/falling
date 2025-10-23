@@ -1,9 +1,11 @@
 use std::time::SystemTime;
+use std::collections::HashSet;
 
 use bevy::dev_tools::fps_overlay::FpsOverlayPlugin;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::rngs::StdRng;
+use rand::SeedableRng;
 
 mod player;
 use player::*;
@@ -14,11 +16,8 @@ use camera::*;
 mod environment;
 use environment::*;
 
-mod collision;
-use collision::*;
-
-use rand::SeedableRng;
-
+mod player_setup;
+use player_setup::*;
 
 fn main() {
     App::new()
@@ -30,6 +29,10 @@ fn main() {
         .insert_resource(ObstaclesData {
             last_spawned: SystemTime::now(),
             rng: StdRng::from_entropy()
+        })
+        .insert_resource(PlayerData {
+            broken_parts: HashSet::new(),
+            alive: true
         })
         .add_systems(Startup, setup_environment)
         .add_systems(Startup, setup_player)

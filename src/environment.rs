@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::{rngs::StdRng, Rng};
 
-use crate::player::PlayerTorso;
+use crate::player_setup::PlayerTorso;
 
 #[derive(Component)]
 pub struct Wall;

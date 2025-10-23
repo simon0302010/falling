@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::player::PlayerTorso;
+use crate::player_setup::PlayerTorso;
 
 #[derive(Component)]
 pub struct MainCamera;
