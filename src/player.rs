@@ -69,7 +69,9 @@ const MAX_MOVE_SPEED: f32 = 600.0;
 
 pub fn player_control(
     mut player_query: Query<&mut Velocity, With<PlayerTorso>>,
-    kb_input: Res<ButtonInput<KeyCode>>
+    kb_input: Res<ButtonInput<KeyCode>>,
+    mut game_state: ResMut<NextState<GameState>>,
+    mut player_data: ResMut<PlayerData>
 ) {
     if kb_input.pressed(KeyCode::ArrowRight) {
         if let Ok(mut velocity) = player_query.single_mut() {
@@ -87,11 +89,10 @@ pub fn player_control(
                 velocity.linvel.x = -MAX_MOVE_SPEED;
             }
         }
-    // temporary
-    } else if kb_input.just_pressed(KeyCode::ArrowUp) {
-        if let Ok(mut velocity) = player_query.single_mut() {
-            velocity.linvel.y += 5000.0;
-        }
+    } else if kb_input.just_pressed(KeyCode::KeyR) {
+        game_state.set(GameState::GameOver);
+        player_data.last_death_str = "You reset the game.".to_string();
+        println!("Player reset game.")
     }
 }
 
