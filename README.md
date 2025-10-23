@@ -1,3 +1,6 @@
+[![build](https://github.com/simon0302010/falling/actions/workflows/rust.yml/badge.svg)](https://github.com/simon0302010/falling/actions/workflows/rust.yml)
+![Hackatime](https://hackatime-badge.hackclub.com/U08HC7N4JJW/falling)
+
 # falling
 
 This is a simple 2D game about falling. The user controls a falling player ragdoll and must avoid obstacles. The game is built using Bevy and Rapier2D.
