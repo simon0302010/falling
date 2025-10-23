@@ -51,6 +51,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install dependencies
+        if: startsWith(matrix.target, 'x86_64-unknown-linux') || startsWith(matrix.target, 'aarch64-unknown-linux')
+        run: sudo apt-get update && sudo apt-get install -y pkg-config libasound2-dev
+
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -104,8 +108,13 @@ jobs:
           usesh: true
           mem: 4096
           prepare: |
-            pkg install -y curl git rust cargo
+            pkg install -y curl git
+            curl https://sh.rustup.rs -sSf | sh -s -- -y
+            . $HOME/.cargo/env
           run: |
+            . $HOME/.cargo/env
+            rustc --version
+            cargo --version
             cargo build --release --target ${{ matrix.target }}
             mkdir -p dist
             mv target/${{ matrix.target }}/release/falling dist/${{ matrix.out }}
