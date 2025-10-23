@@ -19,10 +19,15 @@ pub struct PlayerData {
     pub alive: bool,
 }
 
-pub fn detect_collision(
+pub fn handle_collision(
     mut contact_force_events: EventReader<ContactForceEvent>,
     name_query: Query<&Name>,
+    mut player_data: ResMut<PlayerData>,
+    mut color_query: Query<&mut MeshMaterial2d<ColorMaterial>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
+    let broken_color = Color::srgb(1.0, 0.3, 0.3);
+
     for contact_force_event in contact_force_events.read() {
         let name1 = name_query.get(contact_force_event.collider1).unwrap();
         let name2 = name_query.get(contact_force_event.collider2).unwrap();
@@ -33,7 +38,32 @@ pub fn detect_collision(
             println!(
                 "Collision between '{}' and '{}'. Force: {}",
                 name1, name2, impact_force
-            )
+            );
+            if player_data.broken_parts.contains(&name1.to_string()) || player_data.broken_parts.contains(&name2.to_string()) {
+                player_data.alive = false;
+                println!("Player died.");
+                return;
+            }
+            if name1.contains("player") {
+                player_data.broken_parts.insert(name1.to_string());
+                if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider1) {
+                    if let Some(material) = materials.get_mut(&material_handle.0) {
+                        material.color = broken_color.clone();
+                    }
+                }
+            }
+            if name2.contains("player") {
+                player_data.broken_parts.insert(name2.to_string());
+                if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider2) {
+                    if let Some(material) = materials.get_mut(&material_handle.0) {
+                        material.color = broken_color.clone();
+                    }
+                }
+            }
+            if player_data.broken_parts.contains("player_head") {
+                player_data.alive = false;
+                println!("Player died because head was hit too hard.");
+            }
         }
     }
 }

@@ -15,11 +15,11 @@ pub fn setup_player(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    let white_material = materials.add(Color::srgb(1.0, 1.0, 1.0));
+    let white_material = Color::srgb(1.0, 1.0, 1.0);
 
     let torso = commands
         .spawn(Mesh2d(meshes.add(Rectangle::new(20.0, 40.0))))
-        .insert(MeshMaterial2d(white_material.clone()))
+        .insert(MeshMaterial2d(materials.add(white_material.clone())))
         .insert(Collider::cuboid(10.0, 20.0))
         .insert(Transform::from_xyz(0.0, 200.0, 0.0))
         .insert(PlayerTorso)
@@ -32,13 +32,13 @@ pub fn setup_player(
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
         .insert(Name::new("player_torso"))
-        .insert(ContactForceEventThreshold(50.0 * 1000000.0))
+        .insert(ContactForceEventThreshold(0.5 * 1000000.0))
         .insert(ActiveEvents::CONTACT_FORCE_EVENTS)
         .id();
 
     let head = commands
         .spawn(Mesh2d(meshes.add(Circle::new(15.0))))
-        .insert(MeshMaterial2d(white_material.clone()))
+        .insert(MeshMaterial2d(materials.add(white_material.clone())))
         .insert(Collider::ball(15.0))
         .insert(Transform::from_xyz(0.0, 236.0, 0.0))
         .insert(Damping {
@@ -55,7 +55,7 @@ pub fn setup_player(
 
     let arm_r = commands
         .spawn(Mesh2d(meshes.add(Rectangle::new(10.0, 50.0))))
-        .insert(MeshMaterial2d(white_material.clone()))
+        .insert(MeshMaterial2d(materials.add(white_material.clone())))
         .insert(Collider::cuboid(5.0, 25.0))
         .insert(Transform::from_xyz(18.0, 195.0, 0.0))
         .insert(Damping {
@@ -73,7 +73,7 @@ pub fn setup_player(
 
     let arm_l = commands
         .spawn(Mesh2d(meshes.add(Rectangle::new(10.0, 50.0))))
-        .insert(MeshMaterial2d(white_material.clone()))
+        .insert(MeshMaterial2d(materials.add(white_material.clone())))
         .insert(Collider::cuboid(5.0, 25.0))
         .insert(Transform::from_xyz(-18.0, 195.0, 0.0))
         .insert(Damping {
@@ -90,7 +90,7 @@ pub fn setup_player(
 
     let leg_r = commands
         .spawn(Mesh2d(meshes.add(Rectangle::new(10.0, 50.0))))
-        .insert(MeshMaterial2d(white_material.clone()))
+        .insert(MeshMaterial2d(materials.add(white_material.clone())))
         .insert(Collider::cuboid(5.0, 25.0))
         .insert(Transform::from_xyz(6.0, 155.0, 0.0))
         .insert(Damping {
@@ -108,7 +108,7 @@ pub fn setup_player(
 
     let leg_l = commands
         .spawn(Mesh2d(meshes.add(Rectangle::new(10.0, 50.0))))
-        .insert(MeshMaterial2d(white_material.clone()))
+        .insert(MeshMaterial2d(materials.add(white_material.clone())))
         .insert(Collider::cuboid(5.0, 25.0))
         .insert(Transform::from_xyz(-6.0, 155.0, 0.0))
         .insert(Damping {
