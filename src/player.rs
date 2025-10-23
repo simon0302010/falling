@@ -1,22 +1,15 @@
-/*
-Ideas:
-- Turn player limbs red when broken
-- Player dies when broken limb experiences too much force
-- Player dies instantly when head experiences too much force
-*/
-
 use std::collections::HashSet;
 
 use bevy::prelude::*;
 use bevy::input::ButtonInput;
 use bevy_rapier2d::prelude::*;
 
-use crate::player_setup::{PlayerBodyPart, PlayerTorso};
+use crate::{game_states::GameState, player_setup::{PlayerBodyPart, PlayerTorso}};
 
 #[derive(Resource)]
 pub struct PlayerData {
     pub broken_parts: HashSet<String>,
-    pub alive: bool,
+    pub last_death_str: String
 }
 
 pub fn handle_collision(
@@ -25,6 +18,7 @@ pub fn handle_collision(
     mut player_data: ResMut<PlayerData>,
     mut color_query: Query<&mut MeshMaterial2d<ColorMaterial>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
+    mut game_state: ResMut<NextState<GameState>>
 ) {
     let broken_color = Color::srgb(1.0, 0.3, 0.3);
 
@@ -40,8 +34,9 @@ pub fn handle_collision(
                 name1, name2, impact_force
             );
             if player_data.broken_parts.contains(&name1.to_string()) || player_data.broken_parts.contains(&name2.to_string()) {
-                player_data.alive = false;
-                println!("Player died.");
+                game_state.set(GameState::GameOver);
+                player_data.last_death_str = "You hit the ground too hard.".to_string();
+                println!("Player hit ground too hard.");
                 return;
             }
             if name1.contains("player") {
@@ -61,7 +56,8 @@ pub fn handle_collision(
                 }
             }
             if player_data.broken_parts.contains("player_head") {
-                player_data.alive = false;
+                game_state.set(GameState::GameOver);
+                player_data.last_death_str = "You hit your head too hard.".to_string();
                 println!("Player died because head was hit too hard.");
             }
         }
