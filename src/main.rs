@@ -46,6 +46,7 @@ fn main() {
         .add_systems(Startup, setup_environment)
         .add_systems(Startup, setup_player)
         .add_systems(Startup, setup_camera)
+        .add_systems(PostStartup, spawn_score_ui)
         .add_systems(OnEnter(GameState::PreGame), spawn_pre_game_ui)
         .add_systems(OnExit(GameState::PreGame), despawn_pre_game_ui)
         .add_systems(OnExit(GameState::PreGame), setup_player)
@@ -59,6 +60,7 @@ fn main() {
         .add_systems(OnExit(GameState::GameOver), setup_player)
         .add_systems(Update, handle_game_over_input.run_if(in_state(GameState::GameOver)))
         .add_systems(PostUpdate, increment_score.run_if(in_state(GameState::InGame)))
+        .add_systems(PostUpdate, update_score_ui)
         .add_systems(PostUpdate, camera_follow_y)
         .run();
 }
