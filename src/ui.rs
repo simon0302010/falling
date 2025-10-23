@@ -14,7 +14,7 @@ pub fn spawn_game_over_ui(
     mut player_data: ResMut<PlayerData>,
 ) {
     commands.spawn((
-        Text::new(format!("{}\nPress Space to restart", player_data.last_death_str)),
+        Text::new(format!("{}\nPress Space to restart\nScore: {}", player_data.last_death_str, player_data.score)),
         TextFont {
             font_size: 30.0,
             ..Default::default()
@@ -39,13 +39,17 @@ pub fn spawn_game_over_ui(
 pub fn despawn_game_over_ui(
     mut commands: Commands,
     query: Query<Entity, With<GameOverText>>,
-    player_part_query: Query<Entity, With<PlayerBodyPart>>
+    player_part_query: Query<Entity, With<PlayerBodyPart>>,
+    mut player_data: ResMut<PlayerData>,
 ) {
     for entity in query.iter() { commands.entity(entity).despawn(); }
 
     for player_part in player_part_query.iter() {
         commands.entity(player_part).despawn();
     }
+
+    player_data.score = 0;
+    player_data.last_y_position = 200.0;
 }
 
 pub fn handle_game_over_input(

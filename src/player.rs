@@ -9,7 +9,9 @@ use crate::{game_states::GameState, player_setup::{PlayerBodyPart, PlayerTorso}}
 #[derive(Resource)]
 pub struct PlayerData {
     pub broken_parts: HashSet<String>,
-    pub last_death_str: String
+    pub last_death_str: String,
+    pub last_y_position: f32,
+    pub score: i32,
 }
 
 pub fn handle_collision(
@@ -64,6 +66,16 @@ pub fn handle_collision(
     }
 }
 
+pub fn increment_score(
+    player_query: Query<&Transform, With<PlayerTorso>>,
+    mut player_data: ResMut<PlayerData>
+) {
+    if let Ok(player_transform) = player_query.single() {
+        player_data.score += (player_data.last_y_position - player_transform.translation.y) as i32 / 10;
+        player_data.last_y_position = player_transform.translation.y;
+    }
+}
+
 const MOVE_ACCELERATION: f32 = 100.0;
 const MAX_MOVE_SPEED: f32 = 600.0;
 
@@ -103,7 +115,8 @@ pub fn recenter_world(
     mut transforms: ParamSet<(
         Query<&Transform, With<PlayerTorso>>,
         Query<&mut Transform, With<PlayerBodyPart>>,
-    )>
+    )>,
+    mut player_data: ResMut<PlayerData>
 ) {
     if let Ok(torso_transform) = transforms.p0().single() {
         let torso_y = torso_transform.translation.y;
@@ -114,6 +127,9 @@ pub fn recenter_world(
             for mut rigid_body in transforms.p1().iter_mut() {
                 rigid_body.translation.y += diff;
             }
+
+            
+            player_data.last_y_position = RESET_HEIGHT + (player_data.last_y_position - MIN_HEIGHT).abs();
         }
     }
 }

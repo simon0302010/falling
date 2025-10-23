@@ -38,7 +38,9 @@ fn main() {
         })
         .insert_resource(PlayerData {
             broken_parts: HashSet::new(),
-            last_death_str: "".to_string()
+            last_death_str: "".to_string(),
+            last_y_position: 200.0,
+            score: 0,
         })
         .insert_state(GameState::PreGame)
         .add_systems(Startup, setup_environment)
@@ -56,6 +58,7 @@ fn main() {
         .add_systems(OnExit(GameState::GameOver), despawn_game_over_ui)
         .add_systems(OnExit(GameState::GameOver), setup_player)
         .add_systems(Update, handle_game_over_input.run_if(in_state(GameState::GameOver)))
+        .add_systems(PostUpdate, increment_score.run_if(in_state(GameState::InGame)))
         .add_systems(PostUpdate, camera_follow_y)
         .run();
 }
