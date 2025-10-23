@@ -23,8 +23,8 @@ pub fn handle_collision(
     let broken_color = Color::srgb(1.0, 0.3, 0.3);
 
     for contact_force_event in contact_force_events.read() {
-        let name1 = name_query.get(contact_force_event.collider1).unwrap();
-        let name2 = name_query.get(contact_force_event.collider2).unwrap();
+        let name1 = name_query.get(contact_force_event.collider1).map_or("not_found", |n| n);
+        let name2 = name_query.get(contact_force_event.collider2).map_or("not_found", |n| n);
 
         let impact_force = contact_force_event.total_force_magnitude as i32;
 
