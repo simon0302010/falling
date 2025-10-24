@@ -22,9 +22,6 @@ use player_setup::*;
 mod game_states;
 use game_states::*;
 
-mod ui;
-use ui::*;
-
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)

@@ -22,7 +22,8 @@ pub fn handle_collision(
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut game_state: ResMut<NextState<GameState>>
 ) {
-    let broken_color = Color::srgb(1.0, 0.3, 0.3);
+    let broken_color = Color::srgb(1.0, 1.0, 0.2);
+    let final_color = Color::srgb(1.0, 0.2, 0.2);
 
     for contact_force_event in contact_force_events.read() {
         let name1 = name_query.get(contact_force_event.collider1).map_or("not_found", |n| n);
@@ -31,36 +32,53 @@ pub fn handle_collision(
         let impact_force = contact_force_event.total_force_magnitude as i32;
 
         if !(name1.contains("player") && name2.contains("player")) {
-            println!(
+            debug!(
                 "Collision between '{}' and '{}'. Force: {}",
                 name1, name2, impact_force
             );
             if player_data.broken_parts.contains(&name1.to_string()) || player_data.broken_parts.contains(&name2.to_string()) {
                 game_state.set(GameState::GameOver);
                 player_data.last_death_str = "You hit the ground too hard.".to_string();
-                println!("Player hit ground too hard.");
-                return;
+                info!("Player hit ground too hard.");
             }
             if name1.contains("player") {
-                player_data.broken_parts.insert(name1.to_string());
-                if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider1) {
-                    if let Some(material) = materials.get_mut(&material_handle.0) {
-                        material.color = broken_color.clone();
+                if !player_data.broken_parts.contains(&name1.to_string()) && !name1.contains("player_head") {
+                    player_data.broken_parts.insert(name1.to_string());
+                    if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider1) {
+                        if let Some(material) = materials.get_mut(&material_handle.0) {
+                            material.color = broken_color.clone();
+                        }
+                    }
+                } else {
+                    player_data.broken_parts.insert(name1.to_string());
+                    if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider1) {
+                        if let Some(material) = materials.get_mut(&material_handle.0) {
+                            material.color = final_color.clone();
+                        }
                     }
                 }
             }
             if name2.contains("player") {
-                player_data.broken_parts.insert(name2.to_string());
-                if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider2) {
-                    if let Some(material) = materials.get_mut(&material_handle.0) {
-                        material.color = broken_color.clone();
+                if !player_data.broken_parts.contains(&name2.to_string()) && !name2.contains("player_head") {
+                    player_data.broken_parts.insert(name2.to_string());
+                    if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider2) {
+                        if let Some(material) = materials.get_mut(&material_handle.0) {
+                            material.color = broken_color.clone();
+                        }
+                    }
+                } else {
+                    player_data.broken_parts.insert(name2.to_string());
+                    if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider2) {
+                        if let Some(material) = materials.get_mut(&material_handle.0) {
+                            material.color = final_color.clone();
+                        }
                     }
                 }
             }
             if player_data.broken_parts.contains("player_head") {
                 game_state.set(GameState::GameOver);
                 player_data.last_death_str = "You hit your head too hard.".to_string();
-                println!("Player died because head was hit too hard.");
+                info!("Player died because head was hit too hard.");
             }
         }
     }
@@ -104,7 +122,7 @@ pub fn player_control(
     } else if kb_input.just_pressed(KeyCode::KeyR) {
         game_state.set(GameState::GameOver);
         player_data.last_death_str = "You reset the game.".to_string();
-        println!("Player reset game.")
+        info!("Player reset game.")
     }
 }
 

@@ -57,7 +57,7 @@ pub fn setup_environment(
 
 const MAX_SPAWN_DELTA_MS: u128 = 500;
 const FRAME_OBSTACLE_SPAWN_CHANCE: f64 = 0.05;
-const OVER_PLAYER_DESPAWN: f32 = 500.0;
+const OVER_PLAYER_DESPAWN: f32 = 1000.0;
 const MIN_OBSTACLE_DISTANCE: f32 = 300.0;
 const UNDER_PLAYER_SPAWN: f32 = 1000.0;
 const MIN_SPAWN_HEIGHT: f32 = -4000.0;
@@ -94,7 +94,9 @@ pub fn manage_obstacles(
                         .insert(ObstacleObject)
                         .insert(Collider::cuboid(75.0, 50.0))
                         .insert(Transform::from_xyz(new_x, new_y, 0.0))
-                        .insert(Name::new("obstacle_rectangular"));
+                        .insert(Name::new("obstacle_rectangular"))
+                        .insert(RigidBody::Dynamic)
+                        .insert(GravityScale(0.1));
 
                     obstacles_data.last_spawned = SystemTime::now();
                 }

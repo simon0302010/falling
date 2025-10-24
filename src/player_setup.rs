@@ -49,7 +49,7 @@ pub fn setup_player(
         .insert(TransformInterpolation::default())
         .insert(PlayerBodyPart)
         .insert(Name::new("player_head"))
-        .insert(ContactForceEventThreshold(60.0 * 1000000.0))
+        .insert(ContactForceEventThreshold(90.0 * 1000000.0))
         .insert(ActiveEvents::CONTACT_FORCE_EVENTS)
         .id();
 
@@ -177,4 +177,6 @@ pub fn setup_player(
                 .limits([-2.0, 2.0])
         ))
         .insert(ChildOf(torso));
+
+    info!("Player setup complete.");
 }
