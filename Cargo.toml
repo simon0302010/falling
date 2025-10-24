@@ -3,7 +3,7 @@ name = "falling"
 description = "A simple game about falling."
 repository = "https://github.com/simon0302010/falling"
 readme = "README.md"
-version = "0.3.3"
+version = "0.3.4"
 edition = "2024"
 license = "GPL-3.0-only"
 
