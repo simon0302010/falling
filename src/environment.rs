@@ -1,5 +1,4 @@
-use std::time::SystemTime;
-use std::ops::Range;
+use std::{ops::RangeInclusive, time::SystemTime};
 
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
@@ -88,8 +87,8 @@ pub fn manage_obstacles(
                         &mut commands, 
                         &mut meshes, 
                         &mut materials, 
-                        -295..295, 
-                        120..180, 
+                        -295..=295, 
+                        120..=180, 
                         &mut obstacles_data.rng, 
                         new_y,
                     );
@@ -114,27 +113,45 @@ fn spawn_random_obstacle(
     commands: &mut Commands,
     meshes: &mut ResMut<Assets<Mesh>>,
     materials: &mut ResMut<Assets<ColorMaterial>>,
-    x_range: Range<i32>,
-    size_range: Range<i32>,
+    x_range: RangeInclusive<i32>,
+    size_range: RangeInclusive<i32>,
     gen_rng: &mut StdRng,
     y_height: f32,
 ) {
     let obj_width = gen_rng.gen_range(size_range.clone()) as f32;
     let obj_height = gen_rng.gen_range(size_range.clone()) as f32;
-    let x_low = x_range.start as f32 + (obj_width / 2.0);
-    let x_high = x_range.end as f32 - (obj_width / 2.0);
+    let x_low = *x_range.start() as f32 + (obj_width / 2.0);
+    let x_high = *x_range.end() as f32 - (obj_width / 2.0);
     let new_x = gen_rng.gen_range(x_low..x_high);
     let new_y = y_height;
 
-    commands
-        .spawn(Mesh2d(meshes.add(Rectangle::new(obj_width, obj_height))))
-        .insert(MeshMaterial2d(
-            materials.add(Color::srgb(0.3, 0.3, 0.3))
-        ))
-        .insert(ObstacleObject)
-        .insert(Collider::cuboid(obj_width / 2.0, obj_height / 2.0))
-        .insert(Transform::from_xyz(new_x, new_y, 0.0))
-        .insert(Name::new("obstacle_rectangular"))
-        .insert(RigidBody::Dynamic)
-        .insert(GravityScale(0.1));
+    match gen_rng.gen_range(0..2) {
+        0 => {
+            commands
+            .spawn(Mesh2d(meshes.add(Rectangle::new(obj_width, obj_height))))
+            .insert(MeshMaterial2d(
+                materials.add(Color::srgb(0.3, 0.3, 0.3))
+            ))
+            .insert(ObstacleObject)
+            .insert(Collider::cuboid(obj_width / 2.0, obj_height / 2.0))
+            .insert(Transform::from_xyz(new_x, new_y, 0.0))
+            .insert(Name::new("obstacle_rectangular"))
+            .insert(RigidBody::Dynamic)
+            .insert(GravityScale(0.1));
+        }
+        1 => {
+            commands
+            .spawn(Mesh2d(meshes.add(Circle::new(obj_width / 2.0))))
+            .insert(MeshMaterial2d(
+                materials.add(Color::srgb(0.3, 0.3, 0.3))
+            ))
+            .insert(ObstacleObject)
+            .insert(Collider::ball(obj_width / 2.0))
+            .insert(Transform::from_xyz(new_x, new_y, 0.0))
+            .insert(Name::new("obstacle_round"))
+            .insert(RigidBody::Dynamic)
+            .insert(GravityScale(0.1));
+        }
+        _ => unreachable!()
+    }
 }
