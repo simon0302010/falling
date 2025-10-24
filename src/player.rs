@@ -134,7 +134,8 @@ pub fn recenter_world(
         Query<&Transform, With<PlayerTorso>>,
         Query<&mut Transform, With<PlayerBodyPart>>,
     )>,
-    mut player_data: ResMut<PlayerData>
+    mut player_data: ResMut<PlayerData>,
+    game_state: Res<State<GameState>>
 ) {
     if let Ok(torso_transform) = transforms.p0().single() {
         let torso_y = torso_transform.translation.y;
@@ -146,8 +147,9 @@ pub fn recenter_world(
                 rigid_body.translation.y += diff;
             }
 
-            
-            player_data.last_y_position = RESET_HEIGHT + (player_data.last_y_position - MIN_HEIGHT).abs();
+            if game_state.get() == &GameState::InGame {
+                player_data.last_y_position = RESET_HEIGHT + (player_data.last_y_position - MIN_HEIGHT).abs();
+            }
         }
     }
 }

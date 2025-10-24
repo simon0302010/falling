@@ -136,13 +136,17 @@ pub fn spawn_pre_game_ui(mut commands: Commands) {
 pub fn despawn_pre_game_ui(
     mut commands: Commands,
     query: Query<Entity, With<PreGameText>>,
-    player_part_query: Query<Entity, With<PlayerBodyPart>>
+    player_part_query: Query<Entity, With<PlayerBodyPart>>,
+    mut player_data: ResMut<PlayerData>
 ) {
     for entity in query.iter() { commands.entity(entity).despawn(); }
 
     for player_part in player_part_query.iter() {
         commands.entity(player_part).despawn();
     }
+
+    player_data.score = 0;
+    player_data.last_y_position = 200.0;
 }
 
 pub fn handle_pre_game_input(
