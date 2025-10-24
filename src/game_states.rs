@@ -98,7 +98,7 @@ pub fn despawn_game_over_ui(
         commands.entity(obstacle).despawn();
         despawn_count += 1;
     }
-    info!("Despawned {} obstacles", despawn_count);
+    info!("Despawned {} obstacles.", despawn_count);
 
     player_data.score = 0;
     player_data.last_y_position = 200.0;
