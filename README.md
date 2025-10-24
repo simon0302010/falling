@@ -1,5 +1,7 @@
 [![build](https://github.com/simon0302010/falling/actions/workflows/rust.yml/badge.svg)](https://github.com/simon0302010/falling/actions/workflows/rust.yml)
 ![Hackatime](https://hackatime-badge.hackclub.com/U08HC7N4JJW/falling)
+![Crates.io Total Downloads](https://img.shields.io/crates/d/falling)
+![Crates.io Version](https://img.shields.io/crates/v/falling)
 
 # falling
 
@@ -15,7 +17,7 @@ cargo install falling
 
 You can also download a precompiled binary from [Releases](https://github.com/simon0302010/falling/releases).
 
-## Usage
+## Starting
 
 To run the game execute the following command in your terminal:
 
@@ -23,6 +25,14 @@ To run the game execute the following command in your terminal:
 falling
 ```
 > Run the binary if you downloaded it from the releases page.
+
+## Gameplay
+
+The goal of the game is to survive as long as possible while avoiding the obstacles.
+If the player collides with an obstacle, the broken body part will turn yellow.
+If the same body part collides again, the game is over.
+If you hit your head, you lose immediately.
+The score increases with the distance fallen.
 
 ## Controls
 - **Space**: Start the game
