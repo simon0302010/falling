@@ -7,6 +7,10 @@
 
 This is a simple 2D game about falling. The user controls a falling player ragdoll and must avoid obstacles. The game is built using Bevy and Rapier2D.
 
+## Demo
+
+https://github.com/user-attachments/assets/0e8d140e-0641-4a03-8fd5-ab57840883ea
+
 ## Installation
 
 The game can be installed using cargo:
