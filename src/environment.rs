@@ -70,6 +70,7 @@ pub fn manage_obstacles(
     mut obstacles: Query<(Entity, &Transform), With<ObstacleObject>>,
     player_query: Query<&Transform, With<PlayerTorso>>
 ) {
+    // TODO: more configurable
     if let Ok(player_transform) = player_query.single() {
         // create new obstacle if conditions are met
         if let Ok(elapsed_time) = obstacles_data.last_spawned.elapsed() {
@@ -125,8 +126,21 @@ fn spawn_random_obstacle(
     let new_x = gen_rng.gen_range(x_low..x_high);
     let new_y = y_height;
 
-    let obj_color = Color::srgb(0.3, 0.3, 0.3);
+    // TODO: make configurable (maybe even custom image textures)
+    let grayscale = false;
+    let color_variation = 0.2;
+    let base_color = Vec3::new(0.3, 0.3, 0.3);
 
+    let c_red = gen_rng.gen_range(base_color.x-color_variation..base_color.x+color_variation).clamp(0.0, 1.0);
+    let c_green = gen_rng.gen_range(base_color.y-color_variation..base_color.y+color_variation).clamp(0.0, 1.0);
+    let c_blue = gen_rng.gen_range(base_color.z-color_variation..base_color.z+color_variation).clamp(0.0, 1.0);
+    let obj_color = if grayscale {
+        Color::srgb(c_red, c_red, c_red)
+    } else {
+        Color::srgb(c_red, c_green, c_blue)
+    };
+
+    // TODO: random rotation
     match gen_rng.gen_range(0..3) {
         0 => {
             commands

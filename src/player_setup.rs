@@ -10,6 +10,7 @@ pub struct PlayerBodyPart;
 const PLAYER_LINEAR_DAMPING: f32 = 1.0;
 const PLAYER_ANGULAR_DAMPING: f32 = 0.5;
 
+// TODO: configurable size, gravity and color
 pub fn setup_player(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,

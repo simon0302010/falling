@@ -19,6 +19,8 @@ pub enum GameState {
     GameOver,
 }
 
+// TODO: better UIs
+
 pub fn spawn_score_ui(
     mut commands: Commands,
     player_data: ResMut<PlayerData>

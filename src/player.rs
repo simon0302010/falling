@@ -22,6 +22,7 @@ pub fn handle_collision(
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut game_state: ResMut<NextState<GameState>>
 ) {
+    // TODO: make colors configurable
     let broken_color = Color::srgb(1.0, 1.0, 0.2);
     let final_color = Color::srgb(1.0, 0.2, 0.2);
 
