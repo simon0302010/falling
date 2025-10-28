@@ -127,9 +127,9 @@ fn spawn_random_obstacle(
     let new_y = y_height;
 
     // TODO: make configurable (maybe even custom image textures)
-    let grayscale = false;
-    let color_variation = 0.2;
-    let base_color = Vec3::new(0.3, 0.3, 0.3);
+    let grayscale = true;
+    let color_variation = 0.1;
+    let base_color = Vec3::new(0.3, 0.3, 0.3); // x = r, y = g, z = b
 
     let c_red = gen_rng.gen_range(base_color.x-color_variation..base_color.x+color_variation).clamp(0.0, 1.0);
     let c_green = gen_rng.gen_range(base_color.y-color_variation..base_color.y+color_variation).clamp(0.0, 1.0);
