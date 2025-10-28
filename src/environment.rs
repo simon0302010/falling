@@ -125,12 +125,14 @@ fn spawn_random_obstacle(
     let new_x = gen_rng.gen_range(x_low..x_high);
     let new_y = y_height;
 
-    match gen_rng.gen_range(0..2) {
+    let obj_color = Color::srgb(0.3, 0.3, 0.3);
+
+    match gen_rng.gen_range(0..3) {
         0 => {
             commands
             .spawn(Mesh2d(meshes.add(Rectangle::new(obj_width, obj_height))))
             .insert(MeshMaterial2d(
-                materials.add(Color::srgb(0.3, 0.3, 0.3))
+                materials.add(obj_color.clone())
             ))
             .insert(ObstacleObject)
             .insert(Collider::cuboid(obj_width / 2.0, obj_height / 2.0))
@@ -143,12 +145,29 @@ fn spawn_random_obstacle(
             commands
             .spawn(Mesh2d(meshes.add(Circle::new(obj_width / 2.0))))
             .insert(MeshMaterial2d(
-                materials.add(Color::srgb(0.3, 0.3, 0.3))
+                materials.add(obj_color.clone())
             ))
             .insert(ObstacleObject)
             .insert(Collider::ball(obj_width / 2.0))
             .insert(Transform::from_xyz(new_x, new_y, 0.0))
             .insert(Name::new("obstacle_round"))
+            .insert(RigidBody::Dynamic)
+            .insert(GravityScale(0.1));
+        }
+        2 => {
+            let point_a = Vec2::new(0.0, obj_height / 2.0);
+            let point_b = Vec2::new(-(obj_width / 2.0), -(obj_height / 2.0));
+            let point_c = Vec2::new(obj_width / 2.0, -(obj_height / 2.0));
+
+            commands
+            .spawn(Mesh2d(meshes.add(Triangle2d::new(point_a, point_b, point_c))))
+            .insert(MeshMaterial2d(
+                materials.add(obj_color.clone())
+            ))
+            .insert(ObstacleObject)
+            .insert(Collider::triangle(point_a, point_b, point_c))
+            .insert(Transform::from_xyz(new_x, new_y, 0.0))
+            .insert(Name::new("obstacle_triangular"))
             .insert(RigidBody::Dynamic)
             .insert(GravityScale(0.1));
         }
