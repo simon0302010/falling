@@ -43,6 +43,12 @@ The score increases with the distance fallen.
 - **Left Arrow**: Move left
 - **Right Arrow**: Move right
 - **R**: Restart the game (Space if game is over)
+> You can also see the controls in the top left corner of the screen.
 
 ## License
+
 This project is licensed under the GNU General Public License Version 3. See the [LICENSE](LICENSE) file for details.
+
+## Credits
+
+Keyboard Icons made by [rhosgfx](https://rhosgfx.itch.io/).

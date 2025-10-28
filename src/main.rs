@@ -53,6 +53,7 @@ fn main() {
         .add_systems(Startup, setup_player)
         .add_systems(Startup, setup_camera)
         .add_systems(PostStartup, spawn_score_ui)
+        .add_systems(PostStartup, show_keybindings)
         .add_systems(OnEnter(GameState::PreGame), spawn_pre_game_ui)
         .add_systems(OnExit(GameState::PreGame), despawn_pre_game_ui)
         .add_systems(OnExit(GameState::PreGame), setup_player)
