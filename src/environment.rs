@@ -71,30 +71,30 @@ pub fn manage_obstacles(
         // create new obstacle if conditions are met
         if let Ok(elapsed_time) = obstacles_data.last_spawned.elapsed()
             && elapsed_time.as_millis() > MAX_SPAWN_DELTA_MS
-                && obstacles_data.rng.gen_bool(FRAME_OBSTACLE_SPAWN_CHANCE)
-            {
-                let new_y = player_transform.translation.y - UNDER_PLAYER_SPAWN;
+            && obstacles_data.rng.gen_bool(FRAME_OBSTACLE_SPAWN_CHANCE)
+        {
+            let new_y = player_transform.translation.y - UNDER_PLAYER_SPAWN;
 
-                let min_dist_sq = MIN_OBSTACLE_DISTANCE * MIN_OBSTACLE_DISTANCE;
-                let too_close = obstacles.iter().any(|(_, t)| {
-                    let dy = t.translation.y - new_y;
-                    (dy * dy) < min_dist_sq
-                });
+            let min_dist_sq = MIN_OBSTACLE_DISTANCE * MIN_OBSTACLE_DISTANCE;
+            let too_close = obstacles.iter().any(|(_, t)| {
+                let dy = t.translation.y - new_y;
+                (dy * dy) < min_dist_sq
+            });
 
-                if !too_close && player_transform.translation.y >= MIN_SPAWN_HEIGHT {
-                    spawn_random_obstacle(
-                        &mut commands,
-                        &mut meshes,
-                        &mut materials,
-                        -295..=295,
-                        120..=180,
-                        &mut obstacles_data.rng,
-                        new_y,
-                    );
+            if !too_close && player_transform.translation.y >= MIN_SPAWN_HEIGHT {
+                spawn_random_obstacle(
+                    &mut commands,
+                    &mut meshes,
+                    &mut materials,
+                    -295..=295,
+                    120..=180,
+                    &mut obstacles_data.rng,
+                    new_y,
+                );
 
-                    obstacles_data.last_spawned = SystemTime::now();
-                }
+                obstacles_data.last_spawned = SystemTime::now();
             }
+        }
 
         // delete if out of frame
         for (obstacle_entity, obstacle_transform) in obstacles.iter_mut() {

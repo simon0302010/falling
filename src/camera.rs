@@ -5,13 +5,15 @@ use crate::player_setup::PlayerTorso;
 #[derive(Component)]
 pub struct MainCamera;
 
-pub fn setup_camera(
-    mut commands: Commands,
-) {
-    commands.spawn((Camera2d, MainCamera, Camera {
-        clear_color: ClearColorConfig::Custom(Color::srgb(1.0, 0.0, 0.0)),
-        ..default()
-    }));
+pub fn setup_camera(mut commands: Commands) {
+    commands.spawn((
+        Camera2d,
+        MainCamera,
+        Camera {
+            clear_color: ClearColorConfig::Custom(Color::srgb(1.0, 0.0, 0.0)),
+            ..default()
+        },
+    ));
 }
 
 pub fn camera_follow_y(

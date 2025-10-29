@@ -1,17 +1,17 @@
-use bevy::prelude::*;
 use bevy::asset::Asset;
+use bevy::prelude::*;
 use bevy::reflect::Reflect;
 use serde::{Deserialize, Serialize};
 
-use crate::player_setup::PlayerBodyPart;
 use crate::game_states::GameState;
+use crate::player_setup::PlayerBodyPart;
 
 #[derive(Asset, Serialize, Deserialize, Clone, Debug, Reflect)]
 pub struct Theme {
     pub background_color: ColorData,
     pub text_color: ColorData,
     pub player_head_color: ColorData,
-    pub player_body_color: ColorData
+    pub player_body_color: ColorData,
 }
 
 #[derive(Deserialize, Debug, Clone, Serialize, Reflect)]
@@ -42,10 +42,15 @@ pub fn update_theme(
     themes: Res<Assets<Theme>>,
     mut camera_query: Query<&mut Camera>,
     mut text_color_query: Query<&mut TextColor>,
-    mut player_color_query: Query<(&Name, &mut MeshMaterial2d<ColorMaterial>), With<PlayerBodyPart>>,
+    mut player_color_query: Query<
+        (&Name, &mut MeshMaterial2d<ColorMaterial>),
+        With<PlayerBodyPart>,
+    >,
     game_state: Res<State<GameState>>,
 ) {
-    if !theme_handle.is_changed() && !(game_state.is_changed() && *game_state.get() == GameState::InGame) {
+    if !theme_handle.is_changed()
+        && !(game_state.is_changed() && *game_state.get() == GameState::InGame)
+    {
         return;
     }
 
@@ -54,7 +59,8 @@ pub fn update_theme(
     if let Some(theme) = themes.get(&theme_handle.0) {
         // camera clear color
         for mut camera in camera_query.iter_mut() {
-            camera.clear_color = bevy::render::camera::ClearColorConfig::Custom(theme.background_color.to_color());
+            camera.clear_color =
+                bevy::render::camera::ClearColorConfig::Custom(theme.background_color.to_color());
         }
         // text color
         for mut text_color in text_color_query.iter_mut() {
