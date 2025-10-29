@@ -44,52 +44,43 @@ pub fn handle_collision(
                 "Collision between '{}' and '{}'. Force: {}",
                 name1, name2, impact_force
             );
-            if player_data.broken_parts.contains(&name1.to_string())
-                || player_data.broken_parts.contains(&name2.to_string())
+            if player_data.broken_parts.contains(name1) || player_data.broken_parts.contains(name2)
             {
                 game_state.set(GameState::GameOver);
                 player_data.last_death_str = "You hit the ground too hard.".to_string();
                 info!("Player hit ground too hard.");
             }
             if name1.contains("player") {
-                if !player_data.broken_parts.contains(&name1.to_string())
-                    && !name1.contains("player_head")
-                {
+                if !player_data.broken_parts.contains(name1) && !name1.contains("player_head") {
                     player_data.broken_parts.insert(name1.to_string());
                     if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider1)
+                        && let Some(material) = materials.get_mut(&material_handle.0)
                     {
-                        if let Some(material) = materials.get_mut(&material_handle.0) {
-                            material.color = broken_color.clone();
-                        }
+                        material.color = broken_color;
                     }
                 } else {
                     player_data.broken_parts.insert(name1.to_string());
                     if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider1)
+                        && let Some(material) = materials.get_mut(&material_handle.0)
                     {
-                        if let Some(material) = materials.get_mut(&material_handle.0) {
-                            material.color = final_color.clone();
-                        }
+                        material.color = final_color;
                     }
                 }
             }
             if name2.contains("player") {
-                if !player_data.broken_parts.contains(&name2.to_string())
-                    && !name2.contains("player_head")
-                {
+                if !player_data.broken_parts.contains(name2) && !name2.contains("player_head") {
                     player_data.broken_parts.insert(name2.to_string());
                     if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider2)
+                        && let Some(material) = materials.get_mut(&material_handle.0)
                     {
-                        if let Some(material) = materials.get_mut(&material_handle.0) {
-                            material.color = broken_color.clone();
-                        }
+                        material.color = broken_color;
                     }
                 } else {
                     player_data.broken_parts.insert(name2.to_string());
                     if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider2)
+                        && let Some(material) = materials.get_mut(&material_handle.0)
                     {
-                        if let Some(material) = materials.get_mut(&material_handle.0) {
-                            material.color = final_color.clone();
-                        }
+                        material.color = final_color;
                     }
                 }
             }

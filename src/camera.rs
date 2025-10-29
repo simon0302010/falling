@@ -7,7 +7,7 @@ pub struct MainCamera;
 
 pub fn setup_camera(mut commands: Commands) {
     // TODO: make camera style configurable
-    commands.spawn((Camera2d::default(), MainCamera));
+    commands.spawn((Camera2d, MainCamera));
 }
 
 pub fn camera_follow_y(

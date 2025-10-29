@@ -69,8 +69,8 @@ pub fn manage_obstacles(
     // TODO: more configurable
     if let Ok(player_transform) = player_query.single() {
         // create new obstacle if conditions are met
-        if let Ok(elapsed_time) = obstacles_data.last_spawned.elapsed() {
-            if elapsed_time.as_millis() > MAX_SPAWN_DELTA_MS
+        if let Ok(elapsed_time) = obstacles_data.last_spawned.elapsed()
+            && elapsed_time.as_millis() > MAX_SPAWN_DELTA_MS
                 && obstacles_data.rng.gen_bool(FRAME_OBSTACLE_SPAWN_CHANCE)
             {
                 let new_y = player_transform.translation.y - UNDER_PLAYER_SPAWN;
@@ -95,7 +95,6 @@ pub fn manage_obstacles(
                     obstacles_data.last_spawned = SystemTime::now();
                 }
             }
-        }
 
         // delete if out of frame
         for (obstacle_entity, obstacle_transform) in obstacles.iter_mut() {
@@ -152,7 +151,7 @@ fn spawn_random_obstacle(
         0 => {
             commands
                 .spawn(Mesh2d(meshes.add(Rectangle::new(obj_width, obj_height))))
-                .insert(MeshMaterial2d(materials.add(obj_color.clone())))
+                .insert(MeshMaterial2d(materials.add(obj_color)))
                 .insert(ObstacleObject)
                 .insert(Collider::cuboid(obj_width / 2.0, obj_height / 2.0))
                 .insert(Transform {
@@ -161,7 +160,7 @@ fn spawn_random_obstacle(
                         y: new_y,
                         z: 0.0,
                     },
-                    rotation: rotation,
+                    rotation,
                     ..default()
                 })
                 .insert(Name::new("obstacle_rectangular"))
@@ -171,7 +170,7 @@ fn spawn_random_obstacle(
         1 => {
             commands
                 .spawn(Mesh2d(meshes.add(Circle::new(obj_width / 2.0))))
-                .insert(MeshMaterial2d(materials.add(obj_color.clone())))
+                .insert(MeshMaterial2d(materials.add(obj_color)))
                 .insert(ObstacleObject)
                 .insert(Collider::ball(obj_width / 2.0))
                 .insert(Transform::from_xyz(new_x, new_y, 0.0))
@@ -188,7 +187,7 @@ fn spawn_random_obstacle(
                 .spawn(Mesh2d(
                     meshes.add(Triangle2d::new(point_a, point_b, point_c)),
                 ))
-                .insert(MeshMaterial2d(materials.add(obj_color.clone())))
+                .insert(MeshMaterial2d(materials.add(obj_color)))
                 .insert(ObstacleObject)
                 .insert(Collider::triangle(point_a, point_b, point_c))
                 .insert(Transform {
@@ -197,7 +196,7 @@ fn spawn_random_obstacle(
                         y: new_y,
                         z: 0.0,
                     },
-                    rotation: rotation,
+                    rotation,
                     ..default()
                 })
                 .insert(Name::new("obstacle_triangular"))
