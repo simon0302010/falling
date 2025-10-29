@@ -29,6 +29,8 @@ use ui::*;
 mod themes;
 use themes::*;
 
+// TODO: add sound
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
@@ -52,6 +54,7 @@ fn main() {
             last_y_position: 200.0,
             score: 0,
         })
+        .insert_resource(ThemeInfo { loaded: false })
         .insert_state(GameState::PreGame)
         .add_systems(PreStartup, load_theme)
         .add_systems(Startup, setup_environment)
@@ -66,6 +69,7 @@ fn main() {
             Update,
             handle_pre_game_input.run_if(in_state(GameState::PreGame)),
         )
+        .add_systems(PreUpdate, check_theme)
         .add_systems(Update, player_control.run_if(in_state(GameState::InGame)))
         .add_systems(Update, recenter_world)
         .add_systems(Update, manage_obstacles.run_if(in_state(GameState::InGame)))

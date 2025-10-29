@@ -8,6 +8,11 @@ use crate::player_setup::PlayerBodyPart;
 
 const THEME_NAME: &str = "spooky";
 
+#[derive(Resource)]
+pub struct ThemeInfo {
+    pub loaded: bool,
+}
+
 // defaults for theme
 fn default_black() -> ColorData {
     ColorData {
@@ -142,9 +147,11 @@ pub fn update_theme(
     mut image_node_query: Query<&mut ImageNode>,
     game_state: Res<State<GameState>>,
     asset_server: Res<AssetServer>,
+    theme_info: Res<ThemeInfo>,
 ) {
     if !theme_handle.is_changed()
         && !(game_state.is_changed() && *game_state.get() == GameState::InGame)
+        && !theme_info.is_changed()
     {
         return;
     }
@@ -182,5 +189,21 @@ pub fn update_theme(
         }
     } else {
         error!("Failed to load theme. Falling back to default.")
+    }
+}
+
+pub fn check_theme(
+    theme_handle: Res<ThemeHandle>,
+    themes: Res<Assets<Theme>>,
+    mut theme_info: ResMut<ThemeInfo>,
+) {
+    if let Some(_) = themes.get(&theme_handle.0) {
+        if theme_info.loaded == false {
+            theme_info.loaded = true;
+        }
+    } else {
+        if theme_info.loaded == true {
+            theme_info.loaded = false;
+        }
     }
 }

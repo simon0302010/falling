@@ -92,7 +92,6 @@ pub fn handle_game_over_input(
     }
 }
 
-// TODO: make pre game ui text color configurable
 pub fn spawn_pre_game_ui(mut commands: Commands) {
     commands.spawn((
         Text::new("Press Space to start."),
