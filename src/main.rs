@@ -3,6 +3,7 @@ use std::time::SystemTime;
 
 // use bevy::dev_tools::fps_overlay::FpsOverlayPlugin;
 use bevy::prelude::*;
+use bevy_common_assets::ron::RonAssetPlugin;
 use bevy_rapier2d::prelude::*;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
@@ -25,6 +26,9 @@ use game_states::*;
 mod ui;
 use ui::*;
 
+mod themes;
+use themes::*;
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
@@ -35,9 +39,9 @@ fn main() {
             ..default()
         }))
         .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
+        .add_plugins(RonAssetPlugin::<Theme>::new(&["theme.ron"]))
         // .add_plugins(FpsOverlayPlugin::default())
         // .add_plugins(RapierDebugRenderPlugin::default())
-        .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
         .insert_resource(ObstaclesData {
             last_spawned: SystemTime::now(),
             rng: StdRng::from_entropy(),
@@ -49,6 +53,7 @@ fn main() {
             score: 0,
         })
         .insert_state(GameState::PreGame)
+        .add_systems(PreStartup, load_theme)
         .add_systems(Startup, setup_environment)
         .add_systems(Startup, setup_player)
         .add_systems(Startup, setup_camera)
@@ -65,6 +70,7 @@ fn main() {
         .add_systems(Update, recenter_world)
         .add_systems(Update, manage_obstacles.run_if(in_state(GameState::InGame)))
         .add_systems(Update, handle_collision.run_if(in_state(GameState::InGame)))
+        .add_systems(Update, update_theme)
         .add_systems(OnEnter(GameState::GameOver), spawn_game_over_ui)
         .add_systems(OnExit(GameState::GameOver), despawn_game_over_ui)
         .add_systems(OnExit(GameState::GameOver), setup_player)
