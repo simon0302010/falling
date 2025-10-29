@@ -1,15 +1,12 @@
-use bevy::prelude::*;
 use crate::player::PlayerData;
+use bevy::prelude::*;
 
 const WHITE_COLOR: Color = Color::srgb(1.0, 1.0, 1.0);
 
 #[derive(Component)]
 pub struct ScoreText;
 
-pub fn spawn_score_ui(
-    mut commands: Commands,
-    player_data: ResMut<PlayerData>
-) {
+pub fn spawn_score_ui(mut commands: Commands, player_data: ResMut<PlayerData>) {
     commands.spawn((
         Text::new(format!("Score: {}", player_data.score)),
         TextFont {
@@ -33,17 +30,14 @@ pub fn spawn_score_ui(
 
 pub fn update_score_ui(
     mut score_query: Query<&mut Text, With<ScoreText>>,
-    player_data: Res<PlayerData>
+    player_data: Res<PlayerData>,
 ) {
     if let Ok(mut score_text) = score_query.single_mut() {
         score_text.0 = format!("Score: {}", player_data.score);
     }
 }
 
-pub fn show_keybindings(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>
-) {
+pub fn show_keybindings(mut commands: Commands, asset_server: Res<AssetServer>) {
     // left arrow
     commands.spawn((
         ImageNode {
@@ -56,7 +50,7 @@ pub fn show_keybindings(
             width: Val::Px(22.0),
             height: Val::Px(22.0),
             ..default()
-        }
+        },
     ));
     commands.spawn((
         Text::new(": Move Left"),
@@ -69,7 +63,7 @@ pub fn show_keybindings(
             left: Val::Px(37.0),
             top: Val::Px(11.0),
             ..default()
-        }
+        },
     ));
 
     // right arrow
@@ -84,7 +78,7 @@ pub fn show_keybindings(
             width: Val::Px(22.0),
             height: Val::Px(22.0),
             ..default()
-        }
+        },
     ));
     commands.spawn((
         Text::new(": Move Right"),
@@ -97,7 +91,7 @@ pub fn show_keybindings(
             left: Val::Px(37.0),
             top: Val::Px(41.0),
             ..default()
-        }
+        },
     ));
 
     // r key
@@ -112,7 +106,7 @@ pub fn show_keybindings(
             width: Val::Px(22.0),
             height: Val::Px(22.0),
             ..default()
-        }
+        },
     ));
     commands.spawn((
         Text::new(": Reset"),
@@ -125,6 +119,6 @@ pub fn show_keybindings(
             left: Val::Px(37.0),
             top: Val::Px(71.0),
             ..default()
-        }
+        },
     ));
 }

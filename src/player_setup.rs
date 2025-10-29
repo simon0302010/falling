@@ -71,7 +71,6 @@ pub fn setup_player(
         .insert(ActiveEvents::CONTACT_FORCE_EVENTS)
         .id();
 
-
     let arm_l = commands
         .spawn(Mesh2d(meshes.add(Rectangle::new(10.0, 50.0))))
         .insert(MeshMaterial2d(materials.add(white_material.clone())))
@@ -106,7 +105,6 @@ pub fn setup_player(
         .insert(ActiveEvents::CONTACT_FORCE_EVENTS)
         .id();
 
-
     let leg_l = commands
         .spawn(Mesh2d(meshes.add(Rectangle::new(10.0, 50.0))))
         .insert(MeshMaterial2d(materials.add(white_material.clone())))
@@ -131,7 +129,7 @@ pub fn setup_player(
             RevoluteJointBuilder::new()
                 .local_anchor1(Vec2::new(0.0, -16.0))
                 .local_anchor2(Vec2::new(0.0, 20.0))
-                .limits([-0.5, 0.5])
+                .limits([-0.5, 0.5]),
         ))
         .insert(ChildOf(torso));
 
@@ -142,7 +140,7 @@ pub fn setup_player(
             RevoluteJointBuilder::new()
                 .local_anchor1(Vec2::new(-5.0, 20.0))
                 .local_anchor2(Vec2::new(13.0, 15.0))
-                .limits([-5.0, 5.0])
+                .limits([-5.0, 5.0]),
         ))
         .insert(ChildOf(torso));
 
@@ -153,7 +151,7 @@ pub fn setup_player(
             RevoluteJointBuilder::new()
                 .local_anchor1(Vec2::new(5.0, 20.0))
                 .local_anchor2(Vec2::new(-13.0, 15.0))
-                .limits([-5.0, 5.0])
+                .limits([-5.0, 5.0]),
         ))
         .insert(ChildOf(torso));
 
@@ -164,7 +162,7 @@ pub fn setup_player(
             RevoluteJointBuilder::new()
                 .local_anchor1(Vec2::new(0.0, 25.0))
                 .local_anchor2(Vec2::new(6.0, -20.0))
-                .limits([-2.0, 2.0])
+                .limits([-2.0, 2.0]),
         ))
         .insert(ChildOf(torso));
 
@@ -175,7 +173,7 @@ pub fn setup_player(
             RevoluteJointBuilder::new()
                 .local_anchor1(Vec2::new(0.0, 25.0))
                 .local_anchor2(Vec2::new(-6.0, -20.0))
-                .limits([-2.0, 2.0])
+                .limits([-2.0, 2.0]),
         ))
         .insert(ChildOf(torso));
 

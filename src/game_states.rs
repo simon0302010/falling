@@ -1,7 +1,7 @@
-use bevy::prelude::*;
 use crate::environment::ObstacleObject;
 use crate::player::PlayerData;
 use crate::player_setup::PlayerBodyPart;
+use bevy::prelude::*;
 
 #[derive(Component)]
 pub struct GameOverText;
@@ -18,12 +18,12 @@ pub enum GameState {
 
 // TODO: better UIs
 
-pub fn spawn_game_over_ui(
-    mut commands: Commands,
-    mut player_data: ResMut<PlayerData>,
-) {
+pub fn spawn_game_over_ui(mut commands: Commands, mut player_data: ResMut<PlayerData>) {
     commands.spawn((
-        Text::new(format!("{}\nPress Space to restart\nScore: {}", player_data.last_death_str, player_data.score)),
+        Text::new(format!(
+            "{}\nPress Space to restart\nScore: {}",
+            player_data.last_death_str, player_data.score
+        )),
         TextFont {
             font_size: 30.0,
             ..Default::default()
@@ -50,9 +50,11 @@ pub fn despawn_game_over_ui(
     query: Query<Entity, With<GameOverText>>,
     player_part_query: Query<Entity, With<PlayerBodyPart>>,
     mut player_data: ResMut<PlayerData>,
-    obstacle_query: Query<Entity, With<ObstacleObject>>
+    obstacle_query: Query<Entity, With<ObstacleObject>>,
 ) {
-    for entity in query.iter() { commands.entity(entity).despawn(); }
+    for entity in query.iter() {
+        commands.entity(entity).despawn();
+    }
 
     for player_part in player_part_query.iter() {
         commands.entity(player_part).despawn();
@@ -73,7 +75,9 @@ pub fn handle_game_over_input(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    if keyboard_input.just_pressed(KeyCode::Space) { next_state.set(GameState::InGame); }
+    if keyboard_input.just_pressed(KeyCode::Space) {
+        next_state.set(GameState::InGame);
+    }
 }
 
 pub fn spawn_pre_game_ui(mut commands: Commands) {
@@ -102,9 +106,11 @@ pub fn despawn_pre_game_ui(
     mut commands: Commands,
     query: Query<Entity, With<PreGameText>>,
     player_part_query: Query<Entity, With<PlayerBodyPart>>,
-    mut player_data: ResMut<PlayerData>
+    mut player_data: ResMut<PlayerData>,
 ) {
-    for entity in query.iter() { commands.entity(entity).despawn(); }
+    for entity in query.iter() {
+        commands.entity(entity).despawn();
+    }
 
     for player_part in player_part_query.iter() {
         commands.entity(player_part).despawn();
@@ -118,5 +124,7 @@ pub fn handle_pre_game_input(
     keyboard_input: Res<ButtonInput<KeyCode>>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    if keyboard_input.just_pressed(KeyCode::Space) { next_state.set(GameState::InGame); }
+    if keyboard_input.just_pressed(KeyCode::Space) {
+        next_state.set(GameState::InGame);
+    }
 }

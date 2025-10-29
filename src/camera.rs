@@ -5,9 +5,7 @@ use crate::player_setup::PlayerTorso;
 #[derive(Component)]
 pub struct MainCamera;
 
-pub fn setup_camera(
-    mut commands: Commands,
-) {
+pub fn setup_camera(mut commands: Commands) {
     // TODO: make camera style configurable
     commands.spawn((Camera2d::default(), MainCamera));
 }
@@ -16,7 +14,7 @@ pub fn camera_follow_y(
     mut queries: ParamSet<(
         Query<&Transform, With<PlayerTorso>>,
         Query<&mut Transform, With<MainCamera>>,
-        Query<&Window>
+        Query<&Window>,
     )>,
 ) {
     let torso_y = if let Ok(torso) = queries.p0().single() {

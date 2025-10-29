@@ -1,11 +1,11 @@
-use std::time::SystemTime;
 use std::collections::HashSet;
+use std::time::SystemTime;
 
 // use bevy::dev_tools::fps_overlay::FpsOverlayPlugin;
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
-use rand::rngs::StdRng;
 use rand::SeedableRng;
+use rand::rngs::StdRng;
 
 mod player;
 use player::*;
@@ -40,7 +40,7 @@ fn main() {
         .insert_resource(ClearColor(Color::srgb(0.0, 0.0, 0.0)))
         .insert_resource(ObstaclesData {
             last_spawned: SystemTime::now(),
-            rng: StdRng::from_entropy()
+            rng: StdRng::from_entropy(),
         })
         .insert_resource(PlayerData {
             broken_parts: HashSet::new(),
@@ -57,7 +57,10 @@ fn main() {
         .add_systems(OnEnter(GameState::PreGame), spawn_pre_game_ui)
         .add_systems(OnExit(GameState::PreGame), despawn_pre_game_ui)
         .add_systems(OnExit(GameState::PreGame), setup_player)
-        .add_systems(Update, handle_pre_game_input.run_if(in_state(GameState::PreGame)))
+        .add_systems(
+            Update,
+            handle_pre_game_input.run_if(in_state(GameState::PreGame)),
+        )
         .add_systems(Update, player_control.run_if(in_state(GameState::InGame)))
         .add_systems(Update, recenter_world)
         .add_systems(Update, manage_obstacles.run_if(in_state(GameState::InGame)))
@@ -65,8 +68,14 @@ fn main() {
         .add_systems(OnEnter(GameState::GameOver), spawn_game_over_ui)
         .add_systems(OnExit(GameState::GameOver), despawn_game_over_ui)
         .add_systems(OnExit(GameState::GameOver), setup_player)
-        .add_systems(Update, handle_game_over_input.run_if(in_state(GameState::GameOver)))
-        .add_systems(PostUpdate, increment_score.run_if(in_state(GameState::InGame)))
+        .add_systems(
+            Update,
+            handle_game_over_input.run_if(in_state(GameState::GameOver)),
+        )
+        .add_systems(
+            PostUpdate,
+            increment_score.run_if(in_state(GameState::InGame)),
+        )
         .add_systems(PostUpdate, update_score_ui)
         .add_systems(PostUpdate, camera_follow_y)
         .run();
