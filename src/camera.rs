@@ -11,7 +11,7 @@ pub fn setup_camera(mut commands: Commands) {
         Camera2d,
         MainCamera,
         Camera {
-            clear_color: ClearColorConfig::Custom(Color::srgb(1.0, 0.0, 0.0)),
+            clear_color: ClearColorConfig::Custom(Color::srgb(0.0, 0.0, 0.0)),
             ..default()
         },
     ));
