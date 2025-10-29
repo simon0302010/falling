@@ -144,15 +144,18 @@ fn spawn_random_obstacle(
         base_color = theme.obstacles_base_color.to_vec();
     }
 
-    let c_red = gen_rng
-        .gen_range(base_color.x - color_variation..base_color.x + color_variation)
-        .clamp(0.0, 1.0);
-    let c_green = gen_rng
-        .gen_range(base_color.y - color_variation..base_color.y + color_variation)
-        .clamp(0.0, 1.0);
-    let c_blue = gen_rng
-        .gen_range(base_color.z - color_variation..base_color.z + color_variation)
-        .clamp(0.0, 1.0);
+    let c_red = gen_rng.gen_range(
+        (base_color.x - color_variation).clamp(0.0, 1.0)
+            ..(base_color.x + color_variation).clamp(0.0, 1.0),
+    );
+    let c_green = gen_rng.gen_range(
+        (base_color.y - color_variation).clamp(0.0, 1.0)
+            ..(base_color.y + color_variation).clamp(0.0, 1.0),
+    );
+    let c_blue = gen_rng.gen_range(
+        (base_color.z - color_variation).clamp(0.0, 1.0)
+            ..(base_color.z + color_variation).clamp(0.0, 1.0),
+    );
     let obj_color = if grayscale {
         Color::srgb(c_red, c_red, c_red)
     } else {

@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use crate::game_states::GameState;
 use crate::player_setup::PlayerBodyPart;
 
+// defaults for theme
 fn default_black() -> ColorData {
     ColorData {
         red: 0.0,
@@ -43,18 +44,25 @@ fn default_gray() -> ColorData {
 
 #[derive(Asset, Serialize, Deserialize, Clone, Debug, Reflect)]
 pub struct Theme {
+    // color for background
     #[serde(default = "default_black")]
     pub background_color: ColorData,
+    // color for all ui text
     #[serde(default = "default_white")]
     pub text_color: ColorData,
+    // player head color
     #[serde(default = "default_white")]
     pub player_head_color: ColorData,
+    // player body color
     #[serde(default = "default_white")]
     pub player_body_color: ColorData,
+    // renders obstacles in grayscale if true
     #[serde(default = "default_true")]
     pub obstacles_grayscale: bool,
+    // how much randomness is added to the obstacle color. 0.0 is no variation from base, 1.0 is completely random color.
     #[serde(default = "default_color_variation")]
     pub obstacles_color_variation: f64,
+    // base color for obstacles. randomness is added afterwards.
     #[serde(default = "default_gray")]
     pub obstacles_base_color: ColorData,
 }
