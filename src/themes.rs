@@ -139,6 +139,7 @@ pub fn update_theme(
         (&Name, &mut MeshMaterial2d<ColorMaterial>),
         With<PlayerBodyPart>,
     >,
+    mut image_node_query: Query<&mut ImageNode>,
     game_state: Res<State<GameState>>,
     asset_server: Res<AssetServer>,
 ) {
@@ -160,6 +161,12 @@ pub fn update_theme(
         for mut text_color in text_color_query.iter_mut() {
             text_color.0 = theme.text_color.to_color();
         }
+
+        // hints for keybindings
+        for mut image_node in image_node_query.iter_mut() {
+            image_node.color = theme.text_color.to_color();
+        }
+
         // player body part color
         for (part_name, mut mesh_material) in player_color_query.iter_mut() {
             if part_name.as_str() == "player_head" {

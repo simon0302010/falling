@@ -42,6 +42,7 @@ pub fn show_keybindings(mut commands: Commands, asset_server: Res<AssetServer>) 
     commands.spawn((
         ImageNode {
             image: asset_server.load("controls/arrow-left.png"),
+            color: Color::srgb(1.0, 1.0, 1.0),
             ..Default::default()
         },
         Node {
@@ -56,7 +57,7 @@ pub fn show_keybindings(mut commands: Commands, asset_server: Res<AssetServer>) 
         Text::new(": Move Left"),
         TextFont {
             font_size: 18.0,
-            ..Default::default()
+            ..default()
         },
         TextColor(WHITE_COLOR),
         Node {
@@ -70,7 +71,8 @@ pub fn show_keybindings(mut commands: Commands, asset_server: Res<AssetServer>) 
     commands.spawn((
         ImageNode {
             image: asset_server.load("controls/arrow-right.png"),
-            ..Default::default()
+            color: Color::srgb(1.0, 1.0, 1.0),
+            ..default()
         },
         Node {
             left: Val::Px(10.0),
@@ -98,7 +100,8 @@ pub fn show_keybindings(mut commands: Commands, asset_server: Res<AssetServer>) 
     commands.spawn((
         ImageNode {
             image: asset_server.load("controls/r.png"),
-            ..Default::default()
+            color: Color::srgb(1.0, 1.0, 1.0),
+            ..default()
         },
         Node {
             left: Val::Px(10.0),
@@ -112,7 +115,7 @@ pub fn show_keybindings(mut commands: Commands, asset_server: Res<AssetServer>) 
         Text::new(": Reset"),
         TextFont {
             font_size: 18.0,
-            ..Default::default()
+            ..default()
         },
         TextColor(WHITE_COLOR),
         Node {
