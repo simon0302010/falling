@@ -5,6 +5,7 @@ use crate::player_setup::PlayerTorso;
 #[derive(Component)]
 pub struct MainCamera;
 
+// TODO: add pixelated look and glow
 pub fn setup_camera(mut commands: Commands) {
     commands.spawn((
         Camera2d,

@@ -4,7 +4,10 @@ use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 use rand::{Rng, rngs::StdRng};
 
-use crate::player_setup::PlayerTorso;
+use crate::{
+    player_setup::PlayerTorso,
+    themes::{Theme, ThemeHandle},
+};
 
 #[derive(Component)]
 pub struct Wall;
@@ -65,8 +68,11 @@ pub fn manage_obstacles(
     mut obstacles_data: ResMut<ObstaclesData>,
     mut obstacles: Query<(Entity, &Transform), With<ObstacleObject>>,
     player_query: Query<&Transform, With<PlayerTorso>>,
+    theme_handle: Res<ThemeHandle>,
+    themes: Res<Assets<Theme>>,
 ) {
-    // TODO: more configurable
+    let theme = themes.get(&theme_handle.0);
+
     if let Ok(player_transform) = player_query.single() {
         // create new obstacle if conditions are met
         if let Ok(elapsed_time) = obstacles_data.last_spawned.elapsed()
@@ -90,6 +96,7 @@ pub fn manage_obstacles(
                     120..=180,
                     &mut obstacles_data.rng,
                     new_y,
+                    theme,
                 );
 
                 obstacles_data.last_spawned = SystemTime::now();
@@ -117,6 +124,7 @@ fn spawn_random_obstacle(
     size_range: RangeInclusive<i32>,
     gen_rng: &mut StdRng,
     y_height: f32,
+    theme_opt: Option<&Theme>,
 ) {
     let obj_width = gen_rng.gen_range(size_range.clone()) as f32;
     let obj_height = gen_rng.gen_range(size_range.clone()) as f32;
@@ -125,10 +133,16 @@ fn spawn_random_obstacle(
     let new_x = gen_rng.gen_range(x_low..x_high);
     let new_y = y_height;
 
-    // TODO: make configurable (maybe even custom image textures)
-    let grayscale = true;
-    let color_variation = 0.1;
-    let base_color = Vec3::new(0.3, 0.3, 0.3); // x = r, y = g, z = b
+    let mut grayscale = true;
+    let mut color_variation = 0.1;
+    let mut base_color = Vec3::new(0.3, 0.3, 0.3); // x = r, y = g, z = b
+
+    // TODO: custom image textures
+    if let Some(theme) = theme_opt {
+        grayscale = theme.obstacles_grayscale;
+        color_variation = theme.obstacles_color_variation as f32;
+        base_color = theme.obstacles_base_color.to_vec();
+    }
 
     let c_red = gen_rng
         .gen_range(base_color.x - color_variation..base_color.x + color_variation)

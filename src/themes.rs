@@ -12,6 +12,9 @@ pub struct Theme {
     pub text_color: ColorData,
     pub player_head_color: ColorData,
     pub player_body_color: ColorData,
+    pub obstacles_grayscale: bool,
+    pub obstacles_color_variation: f64,
+    pub obstacles_base_color: ColorData,
 }
 
 #[derive(Deserialize, Debug, Clone, Serialize, Reflect)]
@@ -25,6 +28,13 @@ pub struct ColorData {
 impl ColorData {
     pub fn to_color(&self) -> Color {
         Color::srgba(self.red, self.green, self.blue, self.alpha)
+    }
+    pub fn to_vec(&self) -> Vec3 {
+        Vec3 {
+            x: self.red,
+            y: self.green,
+            z: self.blue,
+        }
     }
 }
 
@@ -74,5 +84,7 @@ pub fn update_theme(
                 mesh_material.0 = materials.add(theme.player_body_color.to_color());
             }
         }
+    } else {
+        error!("Failed to load theme. Falling back to default.")
     }
 }
