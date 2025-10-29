@@ -42,6 +42,24 @@ fn default_gray() -> ColorData {
     }
 }
 
+fn default_broken_color() -> ColorData {
+    ColorData {
+        red: 1.0,
+        green: 1.0,
+        blue: 0.2,
+        alpha: 1.0,
+    }
+}
+
+fn default_final_color() -> ColorData {
+    ColorData {
+        red: 1.0,
+        green: 0.2,
+        blue: 0.2,
+        alpha: 1.0,
+    }
+}
+
 #[derive(Asset, Serialize, Deserialize, Clone, Debug, Reflect)]
 pub struct Theme {
     // color for background
@@ -65,6 +83,12 @@ pub struct Theme {
     // base color for obstacles. randomness is added afterwards.
     #[serde(default = "default_gray")]
     pub obstacles_base_color: ColorData,
+    // color when body part is broken (default is yellow)
+    #[serde(default = "default_broken_color")]
+    pub player_broken_color: ColorData,
+    // color when broken body part is hit again resulting in the player dying
+    #[serde(default = "default_final_color")]
+    pub player_final_color: ColorData,
 }
 
 #[derive(Deserialize, Debug, Clone, Serialize, Reflect)]

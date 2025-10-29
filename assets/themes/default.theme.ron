@@ -32,4 +32,16 @@
         blue: 0.3,
         alpha: 1.0,
     ),
+    player_broken_color: (
+        red: 1.0,
+        green: 1.0,
+        blue: 0.2,
+        alpha: 1.0,
+    ),
+    player_final_color: (
+        red: 1.0,
+        green: 0.2,
+        blue: 0.2,
+        alpha: 1.0,
+    ),
 )

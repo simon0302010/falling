@@ -7,6 +7,7 @@ use bevy_rapier2d::prelude::*;
 use crate::{
     game_states::GameState,
     player_setup::{PlayerBodyPart, PlayerTorso},
+    themes::{Theme, ThemeHandle},
 };
 
 #[derive(Resource)]
@@ -24,10 +25,16 @@ pub fn handle_collision(
     mut color_query: Query<&mut MeshMaterial2d<ColorMaterial>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
     mut game_state: ResMut<NextState<GameState>>,
+    theme_handle: Res<ThemeHandle>,
+    themes: Res<Assets<Theme>>,
 ) {
-    // TODO: make colors configurable
-    let broken_color = Color::srgb(1.0, 1.0, 0.2);
-    let final_color = Color::srgb(1.0, 0.2, 0.2);
+    let mut broken_color = Color::srgb(1.0, 1.0, 0.2);
+    let mut final_color = Color::srgb(1.0, 0.2, 0.2);
+
+    if let Some(theme) = themes.get(&theme_handle.0) {
+        broken_color = theme.player_broken_color.to_color();
+        final_color = theme.player_final_color.to_color();
+    }
 
     for contact_force_event in contact_force_events.read() {
         let name1 = name_query
