@@ -5,6 +5,10 @@ ThemeManifest(
             name: "Default",
         ),
         ThemeManifestEntry(
+            path: "themes/light.theme.ron",
+            name: "Light",
+        ),
+        ThemeManifestEntry(
             path: "themes/spooky.theme.ron",
             name: "Spooky",
         ),
