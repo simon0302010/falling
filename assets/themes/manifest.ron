@@ -1,0 +1,12 @@
+ThemeManifest(
+    themes: [
+        ThemeManifestEntry(
+            path: "themes/default.theme.ron",
+            name: "Default",
+        ),
+        ThemeManifestEntry(
+            path: "themes/spooky.theme.ron",
+            name: "Spooky",
+        ),
+    ]
+)

@@ -124,6 +124,35 @@ pub fn show_keybindings(mut commands: Commands, asset_server: Res<AssetServer>) 
             ..default()
         },
     ));
+
+    // tab key
+    commands.spawn((
+        ImageNode {
+            image: asset_server.load("controls/tab.png"),
+            color: Color::srgb(1.0, 1.0, 1.0),
+            ..default()
+        },
+        Node {
+            left: Val::Px(10.0),
+            top: Val::Px(100.0),
+            width: Val::Px(35.0),
+            height: Val::Px(22.0),
+            ..default()
+        },
+    ));
+    commands.spawn((
+        Text::new(": Next Theme"),
+        TextFont {
+            font_size: 18.0,
+            ..default()
+        },
+        TextColor(WHITE_COLOR),
+        Node {
+            left: Val::Px(50.0),
+            top: Val::Px(101.0),
+            ..default()
+        },
+    ));
 }
 
 // TODO: theme switcher

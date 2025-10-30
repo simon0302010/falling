@@ -4,6 +4,7 @@ use std::time::SystemTime;
 // use bevy::dev_tools::fps_overlay::FpsOverlayPlugin;
 use bevy::prelude::*;
 use bevy_common_assets::ron::RonAssetPlugin;
+use bevy_embedded_assets::{EmbeddedAssetPlugin, PluginMode};
 use bevy_rapier2d::prelude::*;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
@@ -33,6 +34,9 @@ use themes::*;
 
 fn main() {
     App::new()
+        .add_plugins(EmbeddedAssetPlugin {
+            mode: PluginMode::ReplaceDefault,
+        })
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "Falling".into(),
@@ -41,7 +45,10 @@ fn main() {
             ..default()
         }))
         .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
-        .add_plugins(RonAssetPlugin::<Theme>::new(&["theme.ron"]))
+        .add_plugins((
+            RonAssetPlugin::<Theme>::new(&["theme.ron"]),
+            RonAssetPlugin::<ThemeManifest>::new(&[".ron"]),
+        ))
         // .add_plugins(FpsOverlayPlugin::default())
         // .add_plugins(RapierDebugRenderPlugin::default())
         .insert_resource(ObstaclesData {
@@ -55,13 +62,16 @@ fn main() {
             score: 0,
         })
         .insert_resource(ThemeInfo { loaded: false })
+        .insert_resource(CurrentThemeIndex(0))
         .insert_state(GameState::PreGame)
+        .add_systems(PreStartup, load_themes_manifest)
         .add_systems(PreStartup, load_theme)
         .add_systems(Startup, setup_environment)
         .add_systems(Startup, setup_player)
         .add_systems(Startup, setup_camera)
         .add_systems(PostStartup, spawn_score_ui)
         .add_systems(PostStartup, show_keybindings)
+        .add_systems(PostStartup, show_current_theme)
         .add_systems(OnEnter(GameState::PreGame), spawn_pre_game_ui)
         .add_systems(OnExit(GameState::PreGame), despawn_pre_game_ui)
         .add_systems(OnExit(GameState::PreGame), setup_player)
@@ -70,6 +80,7 @@ fn main() {
             handle_pre_game_input.run_if(in_state(GameState::PreGame)),
         )
         .add_systems(PreUpdate, check_theme)
+        .add_systems(Update, cycle_theme)
         .add_systems(Update, player_control.run_if(in_state(GameState::InGame)))
         .add_systems(Update, recenter_world)
         .add_systems(Update, manage_obstacles.run_if(in_state(GameState::InGame)))

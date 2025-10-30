@@ -5,78 +5,26 @@ use serde::{Deserialize, Serialize};
 
 use crate::game_states::GameState;
 
-const THEME_NAME: &str = "spooky";
+#[derive(Resource, Default)]
+pub struct CurrentThemeIndex(pub usize);
 
 #[derive(Resource)]
 pub struct ThemeInfo {
     pub loaded: bool,
 }
 
-// defaults for theme
-fn default_black() -> ColorData {
-    ColorData {
-        red: 0.0,
-        green: 0.0,
-        blue: 0.0,
-        alpha: 1.0,
-    }
+#[derive(Resource, Default)]
+pub struct ThemeManifestHandle(pub Handle<ThemeManifest>);
+
+#[derive(Deserialize, Debug, Clone, Serialize, Reflect)]
+pub struct ThemeManifestEntry {
+    pub path: String,
+    pub name: String,
 }
 
-fn default_white() -> ColorData {
-    ColorData {
-        red: 1.0,
-        green: 1.0,
-        blue: 1.0,
-        alpha: 1.0,
-    }
-}
-
-fn default_true() -> bool {
-    true
-}
-
-fn default_color_variation() -> f64 {
-    0.1
-}
-
-fn default_obstacle_color() -> ColorData {
-    ColorData {
-        red: 0.3,
-        green: 0.3,
-        blue: 0.3,
-        alpha: 1.0,
-    }
-}
-
-fn default_broken_color() -> ColorData {
-    ColorData {
-        red: 1.0,
-        green: 1.0,
-        blue: 0.2,
-        alpha: 1.0,
-    }
-}
-
-fn default_final_color() -> ColorData {
-    ColorData {
-        red: 1.0,
-        green: 0.2,
-        blue: 0.2,
-        alpha: 1.0,
-    }
-}
-
-fn default_empty() -> String {
-    "".to_string()
-}
-
-fn default_walls_color() -> ColorData {
-    ColorData {
-        red: 0.15,
-        green: 0.15,
-        blue: 0.15,
-        alpha: 1.0,
-    }
+#[derive(Asset, Serialize, Deserialize, Clone, Debug, Reflect)]
+pub struct ThemeManifest {
+    pub themes: Vec<ThemeManifestEntry>,
 }
 
 #[derive(Asset, Serialize, Deserialize, Clone, Debug, Reflect)]
@@ -141,8 +89,41 @@ impl ColorData {
 pub struct ThemeHandle(pub Handle<Theme>);
 
 pub fn load_theme(mut commands: Commands, asset_server: Res<AssetServer>) {
-    let theme_handle = ThemeHandle(asset_server.load(format!("themes/{}.theme.ron", THEME_NAME)));
+    let theme_handle = ThemeHandle(asset_server.load("themes/default.theme.ron"));
     commands.insert_resource(theme_handle);
+}
+
+pub fn load_themes_manifest(mut commands: Commands, asset_server: Res<AssetServer>) {
+    let manifest_handle = ThemeManifestHandle(asset_server.load("themes/manifest.ron"));
+    commands.insert_resource(manifest_handle);
+}
+
+pub fn cycle_theme(
+    kb_input: Res<ButtonInput<KeyCode>>,
+    manifest_handle: Res<ThemeManifestHandle>,
+    manifests: Res<Assets<ThemeManifest>>,
+    mut theme_handle: ResMut<ThemeHandle>,
+    mut current_index: ResMut<CurrentThemeIndex>,
+    asset_server: Res<AssetServer>,
+    mut text_query: Query<&mut Text>,
+) {
+    if kb_input.just_pressed(KeyCode::Tab) {
+        if let Some(manifest) = manifests.get(&manifest_handle.0) {
+            let themes = &manifest.themes;
+            if !themes.is_empty() {
+                current_index.0 = (current_index.0 + 1) % themes.len();
+                let next_theme_path = &themes[current_index.0].path;
+                theme_handle.0 = asset_server.load(next_theme_path);
+                info!("Switched to theme: {}", &themes[current_index.0].name);
+
+                for mut text_item in text_query.iter_mut() {
+                    if text_item.0.contains("Current Theme") {
+                        text_item.0 = format!("Current Theme: {}", &themes[current_index.0].name)
+                    }
+                }
+            }
+        }
+    }
 }
 
 pub fn update_theme(
@@ -216,4 +197,88 @@ pub fn check_theme(
             theme_info.loaded = false;
         }
     }
+}
+
+// defaults for theme
+fn default_black() -> ColorData {
+    ColorData {
+        red: 0.0,
+        green: 0.0,
+        blue: 0.0,
+        alpha: 1.0,
+    }
+}
+
+fn default_white() -> ColorData {
+    ColorData {
+        red: 1.0,
+        green: 1.0,
+        blue: 1.0,
+        alpha: 1.0,
+    }
+}
+
+fn default_true() -> bool {
+    true
+}
+
+fn default_color_variation() -> f64 {
+    0.1
+}
+
+fn default_obstacle_color() -> ColorData {
+    ColorData {
+        red: 0.3,
+        green: 0.3,
+        blue: 0.3,
+        alpha: 1.0,
+    }
+}
+
+fn default_broken_color() -> ColorData {
+    ColorData {
+        red: 1.0,
+        green: 1.0,
+        blue: 0.2,
+        alpha: 1.0,
+    }
+}
+
+fn default_final_color() -> ColorData {
+    ColorData {
+        red: 1.0,
+        green: 0.2,
+        blue: 0.2,
+        alpha: 1.0,
+    }
+}
+
+fn default_empty() -> String {
+    "".to_string()
+}
+
+fn default_walls_color() -> ColorData {
+    ColorData {
+        red: 0.15,
+        green: 0.15,
+        blue: 0.15,
+        alpha: 1.0,
+    }
+}
+
+pub fn show_current_theme(mut commands: Commands) {
+    commands.spawn((
+        Text::new("Current Theme: Default"),
+        TextFont {
+            font_size: 18.0,
+            ..default()
+        },
+        TextColor(Color::srgb(1.0, 1.0, 1.0)),
+        Node {
+            position_type: PositionType::Absolute,
+            right: Val::Px(10.0),
+            top: Val::Px(10.0),
+            ..default()
+        },
+    ));
 }
