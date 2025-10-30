@@ -1,4 +1,4 @@
-// Default Theme
+// Spooky Theme
 (
     background_color: (
         red: 0.1,
@@ -45,4 +45,5 @@
         blue: 0.0,
         alpha: 1.0,
     ),
+    music_path: "spooky/music.mp3"
 )

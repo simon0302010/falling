@@ -8,7 +8,7 @@ edition = "2024"
 license = "GPL-3.0-only"
 
 [dependencies]
-bevy = { version = "0.16.*", features = [ "bevy_dev_tools" ]}
+bevy = { version = "0.16.*", features = [ "bevy_dev_tools", "mp3" ]}
 bevy_rapier2d =  { version = "0.31.*", features = [ "simd-stable", "debug-render-2d" ] }
 bevy_common_assets = { version = "0.13.*", features = ["ron"] }
 bevy_reflect = "0.16.*"

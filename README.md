@@ -51,4 +51,5 @@ This project is licensed under the GNU General Public License Version 3. See the
 
 ## Credits
 
-Keyboard Icons made by [rhosgfx](https://rhosgfx.itch.io/).
+- Keyboard Icons made by [rhosgfx](https://rhosgfx.itch.io/).
+- Background Music for Spooky Theme by Migfus20 -- https://freesound.org/s/646483/ -- License: Attribution 4.0

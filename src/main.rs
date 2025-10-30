@@ -30,6 +30,9 @@ use ui::*;
 mod themes;
 use themes::*;
 
+mod audio;
+use audio::*;
+
 // TODO: add sound
 
 fn main() {
@@ -63,12 +66,14 @@ fn main() {
         })
         .insert_resource(ThemeInfo { loaded: false })
         .insert_resource(CurrentThemeIndex(0))
+        .insert_resource(FinishedThemeLoading(false))
         .insert_state(GameState::PreGame)
         .add_systems(PreStartup, load_themes_manifest)
         .add_systems(PreStartup, load_theme)
         .add_systems(Startup, setup_environment)
         .add_systems(Startup, setup_player)
         .add_systems(Startup, setup_camera)
+        .add_systems(Startup, play_background_audio)
         .add_systems(PostStartup, spawn_score_ui)
         .add_systems(PostStartup, show_keybindings)
         .add_systems(PostStartup, show_current_theme)
@@ -81,6 +86,7 @@ fn main() {
         )
         .add_systems(PreUpdate, check_theme)
         .add_systems(Update, cycle_theme)
+        .add_systems(Update, update_music)
         .add_systems(Update, player_control.run_if(in_state(GameState::InGame)))
         .add_systems(Update, recenter_world)
         .add_systems(Update, manage_obstacles.run_if(in_state(GameState::InGame)))

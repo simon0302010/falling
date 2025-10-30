@@ -3,7 +3,10 @@ use bevy::prelude::*;
 use bevy::reflect::Reflect;
 use serde::{Deserialize, Serialize};
 
-use crate::game_states::GameState;
+use crate::{audio::BackgroundMusic, game_states::GameState};
+
+#[derive(Resource, Default)]
+pub struct FinishedThemeLoading(pub bool);
 
 #[derive(Resource, Default)]
 pub struct CurrentThemeIndex(pub usize);
@@ -62,6 +65,9 @@ pub struct Theme {
     // color for the walls that are to the left and right of the player
     #[serde(default = "default_walls_color")]
     pub walls_color: ColorData,
+    // path to background music to play
+    #[serde(default = "default_empty")]
+    pub music_path: String,
 }
 
 #[derive(Deserialize, Debug, Clone, Serialize, Reflect)]
@@ -106,6 +112,7 @@ pub fn cycle_theme(
     mut current_index: ResMut<CurrentThemeIndex>,
     asset_server: Res<AssetServer>,
     mut text_query: Query<&mut Text>,
+    mut just_loaded: ResMut<FinishedThemeLoading>,
 ) {
     if kb_input.just_pressed(KeyCode::Tab) {
         if let Some(manifest) = manifests.get(&manifest_handle.0) {
@@ -118,11 +125,36 @@ pub fn cycle_theme(
 
                 for mut text_item in text_query.iter_mut() {
                     if text_item.0.contains("Current Theme") {
-                        text_item.0 = format!("Current Theme: {}", &themes[current_index.0].name)
+                        text_item.0 = format!("Current Theme: {}", &themes[current_index.0].name);
                     }
                 }
             }
         }
+
+        just_loaded.0 = true;
+    }
+}
+
+pub fn update_music(
+    themes: Res<Assets<Theme>>,
+    theme_handle: Res<ThemeHandle>,
+    mut music_query: Query<&mut AudioPlayer, With<BackgroundMusic>>,
+    asset_server: Res<AssetServer>,
+    mut just_loaded: ResMut<FinishedThemeLoading>,
+) {
+    if just_loaded.0 {
+        if let Some(theme) = themes.get(&theme_handle.0) {
+            if let Ok(mut music_player) = music_query.single_mut() {
+                if !theme.music_path.is_empty() {
+                    music_player.0 = asset_server.load(format!("themes/{}", &theme.music_path));
+                    info!("Loaded music.")
+                } else {
+                    info!("Stopping music playback.");
+                    music_player.0 = Handle::<AudioSource>::default();
+                }
+            }
+        }
+        just_loaded.0 = false;
     }
 }
 
@@ -179,7 +211,7 @@ pub fn update_theme(
             }
         }
     } else {
-        error!("Failed to load theme. Falling back to default.")
+        warn!("Failed to load theme. Trying again...")
     }
 }
 
