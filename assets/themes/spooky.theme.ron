@@ -38,5 +38,11 @@
         blue: 0.0,
         alpha: 1.0,
     ),
-    player_head_texture: "spooky/head.png"
+    player_head_texture: "spooky/head.png",
+    walls_color: (
+        red: 0.25,
+        green: 0.125,
+        blue: 0.0,
+        alpha: 1.0,
+    ),
 )

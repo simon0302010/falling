@@ -4,7 +4,6 @@ use bevy::reflect::Reflect;
 use serde::{Deserialize, Serialize};
 
 use crate::game_states::GameState;
-use crate::player_setup::PlayerBodyPart;
 
 const THEME_NAME: &str = "spooky";
 
@@ -40,7 +39,7 @@ fn default_color_variation() -> f64 {
     0.1
 }
 
-fn default_gray() -> ColorData {
+fn default_obstacle_color() -> ColorData {
     ColorData {
         red: 0.3,
         green: 0.3,
@@ -71,6 +70,15 @@ fn default_empty() -> String {
     "".to_string()
 }
 
+fn default_walls_color() -> ColorData {
+    ColorData {
+        red: 0.15,
+        green: 0.15,
+        blue: 0.15,
+        alpha: 1.0,
+    }
+}
+
 #[derive(Asset, Serialize, Deserialize, Clone, Debug, Reflect)]
 pub struct Theme {
     // color for background
@@ -92,7 +100,7 @@ pub struct Theme {
     #[serde(default = "default_color_variation")]
     pub obstacles_color_variation: f64,
     // base color for obstacles. randomness is added afterwards.
-    #[serde(default = "default_gray")]
+    #[serde(default = "default_obstacle_color")]
     pub obstacles_base_color: ColorData,
     // color when body part is broken (default is yellow)
     #[serde(default = "default_broken_color")]
@@ -103,6 +111,9 @@ pub struct Theme {
     // path to image texture of player head. is an empty string by default.
     #[serde(default = "default_empty")]
     pub player_head_texture: String,
+    // color for the walls that are to the left and right of the player
+    #[serde(default = "default_walls_color")]
+    pub walls_color: ColorData,
 }
 
 #[derive(Deserialize, Debug, Clone, Serialize, Reflect)]
@@ -140,10 +151,7 @@ pub fn update_theme(
     themes: Res<Assets<Theme>>,
     mut camera_query: Query<&mut Camera>,
     mut text_color_query: Query<&mut TextColor>,
-    mut player_color_query: Query<
-        (&Name, &mut MeshMaterial2d<ColorMaterial>),
-        With<PlayerBodyPart>,
-    >,
+    mut mesh_query: Query<(&Name, &mut MeshMaterial2d<ColorMaterial>)>,
     mut image_node_query: Query<&mut ImageNode>,
     game_state: Res<State<GameState>>,
     asset_server: Res<AssetServer>,
@@ -174,10 +182,10 @@ pub fn update_theme(
             image_node.color = theme.text_color.to_color();
         }
 
-        // player body part color
-        for (part_name, mut mesh_material) in player_color_query.iter_mut() {
+        // player body part color and walls color
+        for (part_name, mut mesh_material) in mesh_query.iter_mut() {
             if part_name.as_str() == "player_head" {
-                if !&theme.player_head_texture.is_empty() {
+                if !theme.player_head_texture.is_empty() {
                     mesh_material.0 = materials
                         .add(asset_server.load(format!("themes/{}", &theme.player_head_texture)))
                 } else {
@@ -185,6 +193,8 @@ pub fn update_theme(
                 }
             } else if part_name.as_str().contains("player") {
                 mesh_material.0 = materials.add(theme.player_body_color.to_color());
+            } else if part_name.as_str() == "wall" {
+                mesh_material.0 = materials.add(theme.walls_color.to_color());
             }
         }
     } else {

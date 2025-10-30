@@ -125,3 +125,5 @@ pub fn show_keybindings(mut commands: Commands, asset_server: Res<AssetServer>) 
         },
     ));
 }
+
+// TODO: theme switcher
