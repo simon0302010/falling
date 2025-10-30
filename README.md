@@ -43,7 +43,13 @@ The score increases with the distance fallen.
 - **Left Arrow**: Move left
 - **Right Arrow**: Move right
 - **R**: Restart the game (Space if game is over)
+- **Tab**: Switches to the next theme
 > You can also see the controls in the top left corner of the screen.
+
+## Known Issues
+
+- Visual Player damage resets when changing themes.
+- The obstacle color of the obstacles currently on the screen is not randomized when changing themes.
 
 ## License
 

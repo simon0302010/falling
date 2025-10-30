@@ -33,7 +33,7 @@ use themes::*;
 mod audio;
 use audio::*;
 
-// TODO: add sound
+// TODO: add sound effects
 
 fn main() {
     App::new()
@@ -66,7 +66,7 @@ fn main() {
         })
         .insert_resource(ThemeInfo { loaded: false })
         .insert_resource(CurrentThemeIndex(0))
-        .insert_resource(FinishedThemeLoading(false))
+        .insert_resource(JustLoadedTheme(false))
         .insert_state(GameState::PreGame)
         .add_systems(PreStartup, load_themes_manifest)
         .add_systems(PreStartup, load_theme)

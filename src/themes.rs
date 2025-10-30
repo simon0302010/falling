@@ -3,11 +3,10 @@ use bevy::prelude::*;
 use bevy::reflect::Reflect;
 use serde::{Deserialize, Serialize};
 
-use crate::{audio::BackgroundMusic, game_states::GameState};
-use bevy::audio::AudioSink;
+use crate::game_states::GameState;
 
 #[derive(Resource, Default)]
-pub struct FinishedThemeLoading(pub bool);
+pub struct JustLoadedTheme(pub bool);
 
 #[derive(Resource, Default)]
 pub struct CurrentThemeIndex(pub usize);
@@ -113,7 +112,7 @@ pub fn cycle_theme(
     mut current_index: ResMut<CurrentThemeIndex>,
     asset_server: Res<AssetServer>,
     mut text_query: Query<&mut Text>,
-    mut just_loaded: ResMut<FinishedThemeLoading>,
+    mut just_loaded: ResMut<JustLoadedTheme>,
 ) {
     if kb_input.just_pressed(KeyCode::Tab) {
         if let Some(manifest) = manifests.get(&manifest_handle.0) {
@@ -133,34 +132,6 @@ pub fn cycle_theme(
         }
 
         just_loaded.0 = true;
-    }
-}
-
-pub fn update_music(
-    themes: Res<Assets<Theme>>,
-    theme_handle: Res<ThemeHandle>,
-    mut music_query: Query<(&mut AudioPlayer, Option<&AudioSink>), With<BackgroundMusic>>,
-    asset_server: Res<AssetServer>,
-    mut just_loaded: ResMut<FinishedThemeLoading>,
-) {
-    if just_loaded.0 {
-        if let Some(theme) = themes.get(&theme_handle.0) {
-            if let Ok((mut music_player, audio_sink)) = music_query.single_mut() {
-                if !theme.music_path.is_empty() {
-                    music_player.0 = asset_server.load(format!("themes/{}", &theme.music_path));
-                    if let Some(sink) = audio_sink {
-                        sink.play();
-                    }
-                    info!("Playing background music.")
-                } else {
-                    if let Some(sink) = audio_sink {
-                        sink.pause();
-                    }
-                    info!("Stopping background music playback.");
-                }
-            }
-        }
-        just_loaded.0 = false;
     }
 }
 
@@ -214,6 +185,8 @@ pub fn update_theme(
                 mesh_material.0 = materials.add(theme.player_body_color.to_color());
             } else if part_name.as_str() == "wall" {
                 mesh_material.0 = materials.add(theme.walls_color.to_color());
+            } else if part_name.as_str().contains("obstacle") {
+                mesh_material.0 = materials.add(theme.obstacles_base_color.to_color())
             }
         }
     } else {
