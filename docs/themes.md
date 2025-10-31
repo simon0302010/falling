@@ -35,6 +35,7 @@ Here is a list of all things that can be specified using a theme file:
 | player_head_texture      | Path to image texture of player head. Is an empty string by default.        | ""                                                                           |
 | walls_color              | Color for the walls that are to the left and right of the player.           | (red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0)                             |
 | music_path               | Path to background music to play.                                           | ""                                                                           |
+| bone_break_path          | Path to sound to play when bone breaks.                                     | ""                                                                           |
 
 > Note: All paths are relative to themes/
 

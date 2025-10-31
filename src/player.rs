@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use bevy::input::ButtonInput;
 use bevy::prelude::*;
+use bevy_kira_audio::prelude::*;
 use bevy_rapier2d::prelude::*;
 
 use crate::{
@@ -27,13 +28,21 @@ pub fn handle_collision(
     mut game_state: ResMut<NextState<GameState>>,
     theme_handle: Res<ThemeHandle>,
     themes: Res<Assets<Theme>>,
+    audio_player: Res<Audio>,
+    asset_server: Res<AssetServer>,
 ) {
     let mut broken_color = Color::srgb(1.0, 1.0, 0.2);
     let mut final_color = Color::srgb(1.0, 0.2, 0.2);
+    let mut played_sound = false;
+    let mut sound_path: String = "".to_string();
 
     if let Some(theme) = themes.get(&theme_handle.0) {
         broken_color = theme.player_broken_color.to_color();
         final_color = theme.player_final_color.to_color();
+        sound_path = format!("themes/{}", theme.bone_break_path);
+        if theme.bone_break_path.is_empty() {
+            played_sound = true;
+        }
     }
 
     for contact_force_event in contact_force_events.read() {
@@ -53,6 +62,12 @@ pub fn handle_collision(
             );
             if player_data.broken_parts.contains(name1) || player_data.broken_parts.contains(name2)
             {
+                if !played_sound {
+                    audio_player
+                        .play(asset_server.load(&sound_path))
+                        .with_volume(Volume::Amplitude(0.5));
+                    played_sound = true;
+                }
                 game_state.set(GameState::GameOver);
                 player_data.last_death_str = "You hit the ground too hard.".to_string();
                 info!("Player hit ground too hard.");
@@ -63,6 +78,10 @@ pub fn handle_collision(
                     if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider1)
                         && let Some(material) = materials.get_mut(&material_handle.0)
                     {
+                        if !played_sound {
+                            audio_player.play(asset_server.load(&sound_path));
+                            played_sound = true;
+                        }
                         material.color = broken_color;
                     }
                 } else {
@@ -70,6 +89,10 @@ pub fn handle_collision(
                     if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider1)
                         && let Some(material) = materials.get_mut(&material_handle.0)
                     {
+                        if !played_sound {
+                            audio_player.play(asset_server.load(&sound_path));
+                            played_sound = true;
+                        }
                         material.color = final_color;
                     }
                 }
@@ -80,6 +103,10 @@ pub fn handle_collision(
                     if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider2)
                         && let Some(material) = materials.get_mut(&material_handle.0)
                     {
+                        if !played_sound {
+                            audio_player.play(asset_server.load(&sound_path));
+                            played_sound = true;
+                        }
                         material.color = broken_color;
                     }
                 } else {
@@ -87,11 +114,19 @@ pub fn handle_collision(
                     if let Ok(material_handle) = color_query.get_mut(contact_force_event.collider2)
                         && let Some(material) = materials.get_mut(&material_handle.0)
                     {
+                        if !played_sound {
+                            audio_player.play(asset_server.load(&sound_path));
+                            played_sound = true;
+                        }
                         material.color = final_color;
                     }
                 }
             }
             if player_data.broken_parts.contains("player_head") {
+                if !played_sound {
+                    audio_player.play(asset_server.load(&sound_path));
+                    played_sound = true;
+                }
                 game_state.set(GameState::GameOver);
                 player_data.last_death_str = "You hit your head too hard.".to_string();
                 info!("Player died because head was hit too hard.");

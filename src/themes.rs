@@ -68,6 +68,9 @@ pub struct Theme {
     // path to background music to play
     #[serde(default = "default_empty")]
     pub music_path: String,
+    // path to sound for bone break
+    #[serde(default = "default_empty")]
+    pub bone_break_path: String,
 }
 
 #[derive(Deserialize, Debug, Clone, Serialize, Reflect)]

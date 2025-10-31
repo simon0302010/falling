@@ -5,6 +5,7 @@ use std::time::SystemTime;
 use bevy::prelude::*;
 use bevy_common_assets::ron::RonAssetPlugin;
 use bevy_embedded_assets::{EmbeddedAssetPlugin, PluginMode};
+use bevy_kira_audio::AudioPlugin;
 use bevy_rapier2d::prelude::*;
 use rand::SeedableRng;
 use rand::rngs::StdRng;
@@ -47,6 +48,7 @@ fn main() {
             }),
             ..default()
         }))
+        .add_plugins(AudioPlugin)
         .add_plugins(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
         .add_plugins((
             RonAssetPlugin::<Theme>::new(&["theme.ron"]),
