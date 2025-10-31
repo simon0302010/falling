@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-use std::time::SystemTime;
 
 // use bevy::dev_tools::fps_overlay::FpsOverlayPlugin;
 use bevy::prelude::*;
@@ -57,7 +56,7 @@ fn main() {
         // .add_plugins(FpsOverlayPlugin::default())
         // .add_plugins(RapierDebugRenderPlugin::default())
         .insert_resource(ObstaclesData {
-            last_spawned: SystemTime::now(),
+            last_spawned: 0.0,
             rng: StdRng::from_entropy(),
         })
         .insert_resource(PlayerData {

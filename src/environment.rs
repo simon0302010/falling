@@ -1,4 +1,4 @@
-use std::{ops::RangeInclusive, time::SystemTime};
+use std::ops::RangeInclusive;
 
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
@@ -17,7 +17,7 @@ pub struct ObstacleObject;
 
 #[derive(Resource)]
 pub struct ObstaclesData {
-    pub last_spawned: SystemTime,
+    pub last_spawned: f32,
     pub rng: StdRng,
 }
 
@@ -54,7 +54,7 @@ pub fn setup_environment(
         .insert(Name::new("wall"));
 }
 
-const MAX_SPAWN_DELTA_MS: u128 = 500;
+const MAX_SPAWN_DELTA_S: f32 = 0.5;
 const FRAME_OBSTACLE_SPAWN_CHANCE: f64 = 0.05;
 const OVER_PLAYER_DESPAWN: f32 = 1000.0;
 const MIN_OBSTACLE_DISTANCE: f32 = 700.0;
@@ -70,13 +70,13 @@ pub fn manage_obstacles(
     player_query: Query<&Transform, With<PlayerTorso>>,
     theme_handle: Res<ThemeHandle>,
     themes: Res<Assets<Theme>>,
+    time: Res<Time>,
 ) {
     let theme = themes.get(&theme_handle.0);
 
     if let Ok(player_transform) = player_query.single() {
         // create new obstacle if conditions are met
-        if let Ok(elapsed_time) = obstacles_data.last_spawned.elapsed()
-            && elapsed_time.as_millis() > MAX_SPAWN_DELTA_MS
+        if time.elapsed_secs() - obstacles_data.last_spawned > MAX_SPAWN_DELTA_S
             && obstacles_data.rng.gen_bool(FRAME_OBSTACLE_SPAWN_CHANCE)
         {
             let new_y = player_transform.translation.y - UNDER_PLAYER_SPAWN;
@@ -99,7 +99,7 @@ pub fn manage_obstacles(
                     theme,
                 );
 
-                obstacles_data.last_spawned = SystemTime::now();
+                obstacles_data.last_spawned = time.elapsed_secs();
             }
         }
 
