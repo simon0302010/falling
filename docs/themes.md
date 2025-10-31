@@ -21,18 +21,20 @@ ThemeManifest(
 A good base for a new theme is the default theme file.
 Here is a list of all things that can be specified using a theme file:
 
-- background_color: The color for the background.
-- text_color: The color for all text in the GUI.
-- player_head_color: The color of the player head.
-- player_body_color: The color of all other player body parts.
-- obstacles_grayscale: Renders obstacles in grayscale when true.
-- obstacles_color_variation: How much randomness is added to the obstacle color. 0.0 is no variation from base, 1.0 is completely random colors.
-- obstacles_base_color: Base color for obstacles. Randomess is added afterwards.
-- player_broken_color: Color when body part is broken (Default is yellow).
-- player_final_color: Color when broken body part is hit again resulting in the player dying.
-- player_head_texture: Path to image texture of player head. Is an empty string by default.
-- walls_color: Color for the walls tht are to the left and right of the player.
-- music_path: Path to background music to play.
+| Name                     | Description                                                                 | Default Value                                                                 |
+|--------------------------|-----------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| background_color         | The color for the background.                                               | (red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)                                |
+| text_color               | The color for all text in the GUI.                                          | (red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)                                |
+| player_head_color        | The color of the player head.                                               | (red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)                                |
+| player_body_color        | The color of all other player body parts.                                   | (red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)                                |
+| obstacles_grayscale      | Renders obstacles in grayscale when true.                                   | true                                                                         |
+| obstacles_color_variation| How much randomness is added to the obstacle color. 0.0 is no variation from base, 1.0 is completely random colors. | 0.1                                                                          |
+| obstacles_base_color     | Base color for obstacles. Randomness is added afterwards.                   | (red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0)                                |
+| player_broken_color      | Color when body part is broken (Default is yellow).                         | (red: 1.0, green: 1.0, blue: 0.2, alpha: 1.0)                                |
+| player_final_color       | Color when broken body part is hit again resulting in the player dying.     | (red: 1.0, green: 0.2, blue: 0.2, alpha: 1.0)                                |
+| player_head_texture      | Path to image texture of player head. Is an empty string by default.        | ""                                                                           |
+| walls_color              | Color for the walls that are to the left and right of the player.           | (red: 0.15, green: 0.15, blue: 0.15, alpha: 1.0)                             |
+| music_path               | Path to background music to play.                                           | ""                                                                           |
 
 > Note: All paths are relative to themes/
 
