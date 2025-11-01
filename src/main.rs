@@ -33,6 +33,9 @@ use themes::*;
 mod audio;
 use audio::*;
 
+mod jumpscare;
+use jumpscare::*;
+
 // TODO: add sound effects
 
 fn main() {
@@ -75,6 +78,7 @@ fn main() {
         .add_systems(Startup, setup_player)
         .add_systems(Startup, setup_camera)
         .add_systems(Startup, play_background_audio)
+        .add_systems(Startup, setup_jumpscare)
         .add_systems(PostStartup, spawn_score_ui)
         .add_systems(PostStartup, show_keybindings)
         .add_systems(PostStartup, show_current_theme)
@@ -86,6 +90,8 @@ fn main() {
             handle_pre_game_input.run_if(in_state(GameState::PreGame)),
         )
         .add_systems(PreUpdate, check_theme)
+        .add_systems(Update, activate_jumpscare)
+        .add_systems(Update, despawn_jumpscare)
         .add_systems(Update, cycle_theme)
         .add_systems(Update, update_music)
         .add_systems(Update, player_control.run_if(in_state(GameState::InGame)))
