@@ -1,5 +1,7 @@
-use bevy::{prelude::*, window::PrimaryWindow};
+use bevy::prelude::*;
 use bevy_kira_audio::prelude::*;
+
+use crate::themes::{CurrentThemeIndex, ThemeManifest, ThemeManifestHandle};
 
 #[derive(Component)]
 pub struct Jumpscare;
@@ -18,30 +20,42 @@ pub fn activate_jumpscare(
     asset_server: Res<AssetServer>,
     mut jumpscare_act: ResMut<JumpscareActivated>,
     audio_player: Res<Audio>,
+    current_index: Res<CurrentThemeIndex>,
+    manifest_handle: Res<ThemeManifestHandle>,
+    manifests: Res<Assets<ThemeManifest>>,
 ) {
-    if rand::random::<f32>() > 0.001 {
-        return;
-    }
-    commands.spawn((
-        ImageNode {
-            image: asset_server.load("img/jumpscare.png"),
-            color: Color::srgb(1.0, 1.0, 1.0),
-            ..default()
-        },
-        Node {
-            position_type: PositionType::Absolute,
-            width: Val::Percent(100.0),
-            height: Val::Percent(100.0),
-            justify_content: JustifyContent::Center,
-            align_items: AlignItems::Center,
-            ..default()
-        },
-        Jumpscare,
-    ));
+    if let Some(manifest) = manifests.get(&manifest_handle.0) {
+        let themes = &manifest.themes;
 
-    audio_player.play(asset_server.load("themes/spooky/jumpscare.mp3"));
-    jumpscare_act.activated = true;
-    info!("Jumpscare spawned!");
+        if &themes[current_index.0].name != "Spooky" && jumpscare_act.activated {
+            return;
+        }
+
+        if rand::random::<f32>() > 0.001 {
+            return;
+        }
+
+        commands.spawn((
+            ImageNode {
+                image: asset_server.load("themes/spooky/jumpscare.png"),
+                color: Color::srgb(1.0, 1.0, 1.0),
+                ..default()
+            },
+            Node {
+                position_type: PositionType::Absolute,
+                width: Val::Percent(100.0),
+                height: Val::Percent(100.0),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                ..default()
+            },
+            Jumpscare,
+        ));
+
+        audio_player.play(asset_server.load("themes/spooky/jumpscare.mp3"));
+        jumpscare_act.activated = true;
+        info!("Jumpscare spawned!");
+    }
 }
 
 pub fn despawn_jumpscare(
