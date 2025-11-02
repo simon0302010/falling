@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_kira_audio::prelude::*;
+use rand::Rng;
 
 use crate::themes::{CurrentThemeIndex, ThemeManifest, ThemeManifestHandle};
 
@@ -27,11 +28,12 @@ pub fn activate_jumpscare(
     if let Some(manifest) = manifests.get(&manifest_handle.0) {
         let themes = &manifest.themes;
 
-        if &themes[current_index.0].name != "Spooky" && jumpscare_act.activated {
+        if &themes[current_index.0].name != "Spooky" || jumpscare_act.activated {
             return;
         }
 
-        if rand::random::<f32>() > 0.001 {
+        let mut rng = rand::thread_rng();
+        if !rng.gen_bool(0.0006) {
             return;
         }
 
@@ -61,14 +63,12 @@ pub fn activate_jumpscare(
 pub fn despawn_jumpscare(
     mut commands: Commands,
     kb_input: Res<ButtonInput<KeyCode>>,
-    mut jumpscare_act: ResMut<JumpscareActivated>,
+    jumpscare_act: Res<JumpscareActivated>,
     jumpscare_ents: Query<Entity, With<Jumpscare>>,
 ) {
     if kb_input.just_pressed(KeyCode::Escape) && jumpscare_act.activated {
         for jumpscare_ent in jumpscare_ents.iter() {
             commands.entity(jumpscare_ent).despawn();
         }
-
-        jumpscare_act.activated = false;
     }
 }
