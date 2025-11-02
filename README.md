@@ -9,7 +9,8 @@ This is a simple 2D game about falling. The user controls a falling player ragdo
 
 ## Demo
 
-https://github.com/user-attachments/assets/0e8d140e-0641-4a03-8fd5-ab57840883ea
+https://github.com/user-attachments/assets/c2312fc9-8bca-469d-9e8d-cf79db169b39
+> The jumpscare is at 1:39.
 
 ## Installation
 
